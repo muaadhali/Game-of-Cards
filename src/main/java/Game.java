@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Game {
-
+    private int playerNum;
     private ArrayList<AdventureCard> adventureDeck = new ArrayList<>();
     private ArrayList<Card> eventDeck = new ArrayList<>();
     private ArrayList<AdventureCard> adventureDiscard = new ArrayList<>();
@@ -10,7 +10,39 @@ public class Game {
 
     private ArrayList<Player> players = new ArrayList<>();
 
+    public Game(int playerNum) {
+        this.playerNum = playerNum;
+    }
+
     public void initialize(){
+        initializeDecks();
+    }
+
+    public int getAdventureDeckSize(){
+        return adventureDeck.size();
+    }
+    public int getEventDeckSize() { return eventDeck.size(); }
+    public int getPlayer1HandSize() { return players.get(0).getHandSize(); }
+    public int getPlayer2HandSize() { return players.get(1).getHandSize(); }
+    public int getPlayer3HandSize() { return players.get(2).getHandSize(); }
+    public int getPlayer4HandSize() { return players.get(3).getHandSize(); }
+
+    public void initializeHands() {
+        for (int i = 0; i < playerNum; i++) {
+            Player player = new Player(i);
+            players.add(player);
+        }
+
+        Random rand = new Random();
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < players.size(); j++) {
+                int nextCard = rand.nextInt(getAdventureDeckSize());
+                players.get(j).hand.add(adventureDeck.remove(nextCard));
+            }
+        }
+    }
+
+    private void initializeDecks() {
         for (int i = 0; i < 100; i++) {
             AdventureCard temp;
             Card tempE;
@@ -102,33 +134,12 @@ public class Game {
 
     }
 
-    public int adventureDeckSize(){
-        return adventureDeck.size();
-    }
-
-    public int eventDeckSize() {
-        return eventDeck.size();
-    }
-
-    public int getPlayer1HandSize() {
-        return 0;
-    }
-
-    public int getPlayer2HandSize() {
-        return 0;
-    }
-
-    public int getPlayer3HandSize() {
-        return 0;
-    }
-
-    public int getPlayer4HandSize() {
-        return 0;
-    }
-
     public static void main(String[] args) {
-        Game game = new Game();
+        Game game = new Game(4);
         game.initialize();
+        game.initializeHands();
+
+        System.out.println(game.players.get(0));
 
         System.out.println(game.adventureDeck);
         System.out.println(game.eventDeck);

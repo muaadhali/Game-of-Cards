@@ -6,26 +6,28 @@ public class MainTest {
 
     @Test
     void RESP_1_test_1(){
-        Game game = new Game();
+        Game game = new Game(4);
         game.initialize();
 
-        assertEquals(100, game.adventureDeckSize());
+        assertEquals(100, game.getAdventureDeckSize());
 
     }
     @Test
     void RESP_1_test_2() {
-        Game game = new Game();
+        Game game = new Game(4);
         game.initialize();
+        game.initializeHands();
 
-        assertEquals(17, game.eventDeckSize());
+        assertEquals(17, game.getEventDeckSize());
     }
 
 //------------------------- RESP-2 ------------------------------------------//
-    
+
     @Test
     void RESP_2_test_1() {
-        Game game = new Game();
+        Game game = new Game(4);
         game.initialize();
+        game.initializeHands();
 
         assertEquals(12, game.getPlayer1HandSize());
         assertEquals(12, game.getPlayer2HandSize());
@@ -33,6 +35,6 @@ public class MainTest {
         assertEquals(12, game.getPlayer4HandSize());
 
 
-        assertEquals(12*4, 100 - game.adventureDeckSize());
+        assertEquals(12*4, 100 - game.getAdventureDeckSize());
     }
 }

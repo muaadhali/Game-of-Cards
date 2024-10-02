@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Game {
     private int playerNum;
     public Player currPlayer;
+    public Card currCard;
 
     private ArrayList<AdventureCard> adventureDeck = new ArrayList<>();
     private ArrayList<Card> eventDeck = new ArrayList<>();
@@ -32,7 +34,7 @@ public class Game {
 
     public void initializeHands() {
         for (int i = 0; i < playerNum; i++) {
-            Player player = new Player(i);
+            Player player = new Player(i+1);
             players.add(player);
         }
 
@@ -46,6 +48,17 @@ public class Game {
     }
 
     public void playTurn(Player currentPlayer) {
+        Random rand = new Random();
+        Scanner playerInput = new Scanner(System.in);
+        int nextEvent = rand.nextInt(eventDeck.size());
+
+        currCard = eventDeck.get(nextEvent);
+        eventDiscard.add(eventDeck.remove(nextEvent));
+        currPlayer = currentPlayer;
+
+        System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
+        System.out.println("CURRENT PLAYER\n" + currPlayer + "\n");
+        System.out.println("Card Drawn: " + currCard);
     }
 
     private void initializeDecks() {

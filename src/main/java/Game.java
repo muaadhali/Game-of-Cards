@@ -3,12 +3,13 @@ import java.util.Random;
 
 public class Game {
     private int playerNum;
+    public Player currPlayer;
+
     private ArrayList<AdventureCard> adventureDeck = new ArrayList<>();
     private ArrayList<Card> eventDeck = new ArrayList<>();
     private ArrayList<AdventureCard> adventureDiscard = new ArrayList<>();
     private ArrayList<Card> eventDiscard = new ArrayList<>();
-
-    private ArrayList<Player> players = new ArrayList<>();
+    public ArrayList<Player> players = new ArrayList<>();
 
     public Game(int playerNum) {
         this.playerNum = playerNum;
@@ -22,6 +23,8 @@ public class Game {
         return adventureDeck.size();
     }
     public int getEventDeckSize() { return eventDeck.size(); }
+    public int getAdventureDiscardSize() { return adventureDiscard.size(); }
+    public int getEventDiscardSize() { return eventDiscard.size(); }
     public int getPlayer1HandSize() { return players.get(0).getHandSize(); }
     public int getPlayer2HandSize() { return players.get(1).getHandSize(); }
     public int getPlayer3HandSize() { return players.get(2).getHandSize(); }
@@ -40,6 +43,9 @@ public class Game {
                 players.get(j).hand.add(adventureDeck.remove(nextCard));
             }
         }
+    }
+
+    public void playTurn(Player currentPlayer) {
     }
 
     private void initializeDecks() {

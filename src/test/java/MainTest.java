@@ -37,4 +37,19 @@ public class MainTest {
 
         assertEquals(12*4, 100 - game.getAdventureDeckSize());
     }
+
+//------------------------- RESP-2 ------------------------------------------//
+
+    @Test
+    void RESP_3_test_1() {
+        Game game = new Game(4);
+        game.initialize();
+        game.initializeHands();
+
+        game.playTurn(game.players.getFirst());
+
+        assertEquals(game.players.getFirst(), game.currPlayer);
+        assertEquals(16, game.getEventDeckSize());
+        assertEquals(1, game.getEventDiscardSize());
+    }
 }

@@ -1,4 +1,4 @@
-public class AdventureCard {
+public class AdventureCard extends Card{
     public String name;
     public int value;
 

@@ -8,6 +8,8 @@ public class Game {
     private ArrayList<AdventureCard> adventureDiscard = new ArrayList<>();
     private ArrayList<Card> eventDiscard = new ArrayList<>();
 
+    private ArrayList<Player> players = new ArrayList<>();
+
     public void initialize(){
         for (int i = 0; i < 100; i++) {
             AdventureCard temp;
@@ -106,6 +108,22 @@ public class Game {
 
     public int eventDeckSize() {
         return eventDeck.size();
+    }
+
+    public int getPlayer1HandSize() {
+        return 0;
+    }
+
+    public int getPlayer2HandSize() {
+        return 0;
+    }
+
+    public int getPlayer3HandSize() {
+        return 0;
+    }
+
+    public int getPlayer4HandSize() {
+        return 0;
     }
 
     public static void main(String[] args) {

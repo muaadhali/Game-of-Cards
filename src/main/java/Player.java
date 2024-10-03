@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class Player {
     public ArrayList<Card> hand = new ArrayList<>();
     private int id;
+    public int shields;
 
     public Player(int id) {
         this.id = id;

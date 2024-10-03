@@ -12,6 +12,7 @@ public class Game {
     private ArrayList<AdventureCard> adventureDiscard = new ArrayList<>();
     private ArrayList<Card> eventDiscard = new ArrayList<>();
     public ArrayList<Player> players = new ArrayList<>();
+    public ArrayList<Player> winners = new ArrayList<>();
 
     public Game(int playerNum) {
         this.playerNum = playerNum;

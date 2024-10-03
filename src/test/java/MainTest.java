@@ -38,7 +38,7 @@ public class MainTest {
         assertEquals(12*4, 100 - game.getAdventureDeckSize());
     }
 
-//------------------------- RESP-2 ------------------------------------------//
+//------------------------- RESP-3 ------------------------------------------//
 
     @Test
     void RESP_3_test_1() {
@@ -51,5 +51,34 @@ public class MainTest {
         assertEquals(game.players.getFirst(), game.currPlayer);
         assertEquals(16, game.getEventDeckSize());
         assertEquals(1, game.getEventDiscardSize());
+    }
+
+//------------------------- RESP-4 ------------------------------------------//
+
+    @Test
+    void RESP_4_test_1() {
+        Game game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        game.players.getFirst().shields = 7;
+        game.players.getLast().shields = 7;
+        game.playTurn(game.players.getFirst());
+
+        assertFalse(game.winners.isEmpty());
+        assertEquals(game.winners.getFirst(), (game.players.getFirst()));
+    }
+
+    @Test
+    void RESP_4_test_2() {
+        Game game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        game.playTurn(game.players.getFirst());
+
+        assertTrue(game.winners.isEmpty());
     }
 }

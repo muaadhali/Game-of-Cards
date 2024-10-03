@@ -49,6 +49,7 @@ public class Game {
     }
 
     public void playTurn(Player currentPlayer) {
+
         Random rand = new Random();
         Scanner playerInput = new Scanner(System.in);
         int nextEvent = rand.nextInt(eventDeck.size());
@@ -60,6 +61,27 @@ public class Game {
         System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
         System.out.println("CURRENT PLAYER\n" + currPlayer + "\n");
         System.out.println("Card Drawn: " + currCard);
+
+        System.out.println("Press <Return> to end turn.");
+        playerInput.nextLine();
+
+        if (checkWinner()) {
+            System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
+            System.out.println("WINNERS");
+            for (Player winner : winners) {
+                System.out.println(winner);
+            }
+        }
+
+    }
+
+    private boolean checkWinner() {
+        for (Player player : players) {
+            if (player.shields >= 7) {
+                winners.add(player);
+            }
+        }
+        return !winners.isEmpty();
     }
 
     private void initializeDecks() {
@@ -159,9 +181,6 @@ public class Game {
         game.initialize();
         game.initializeHands();
 
-        System.out.println(game.players.get(0));
-
-        System.out.println(game.adventureDeck);
-        System.out.println(game.eventDeck);
+        game.playTurn(game.players.getFirst());
     }
 }

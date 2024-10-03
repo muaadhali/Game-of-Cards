@@ -1,4 +1,10 @@
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MainTest {
@@ -64,6 +70,9 @@ public class MainTest {
 
         game.players.getFirst().shields = 7;
         game.players.getLast().shields = 7;
+
+        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
+        System.setIn(in);
         game.playTurn(game.players.getFirst());
 
         assertFalse(game.winners.isEmpty());
@@ -77,6 +86,8 @@ public class MainTest {
         game.initialize();
         game.initializeHands();
 
+        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
+        System.setIn(in);
         game.playTurn(game.players.getFirst());
 
         assertTrue(game.winners.isEmpty());

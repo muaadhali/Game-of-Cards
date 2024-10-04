@@ -92,4 +92,58 @@ public class MainTest {
 
         assertTrue(game.winners.isEmpty());
     }
+
+    @Test
+    void RESP_5_test_1() {
+        Game game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        Card plague = new EventCard("Plague", "The player who draws this card immediately loses 2 shields.");
+
+        game.currCard = plague;
+        game.players.getFirst().shields = 4;
+        game.currPlayer = game.players.getFirst();
+
+        game.resolveEvent();
+
+        assertEquals(2, game.players.getFirst().shields);
+    }
+
+    @Test
+    void RESP_5_test_2() {
+        Game game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        Card queen = new EventCard("Queen's Favor", "The player who draws this card immediately draws 2 adventure cards.");
+
+        game.currCard = queen;
+        game.currPlayer = game.players.getFirst();
+
+        game.resolveEvent();
+
+        assertEquals(14, game.players.getFirst().getHandSize());
+    }
+
+    @Test
+    void RESP_5_test_3() {
+        Game game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        Card prosper = new EventCard("Prosperity", "All players immediately draw 2 adventure cards.");
+
+        game.currCard = prosper;
+        game.currPlayer = game.players.getFirst();
+
+        game.resolveEvent();
+
+        for (int i = 0; i < game.players.size(); i++) {
+            assertEquals(14, game.players.get(i).getHandSize());
+        }
+    }
 }

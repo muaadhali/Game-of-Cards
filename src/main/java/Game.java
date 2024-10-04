@@ -75,6 +75,10 @@ public class Game {
 
     }
 
+    public void resolveEvent() {
+
+    }
+
     private boolean checkWinner() {
         for (Player player : players) {
             if (player.shields >= 7) {

@@ -39,12 +39,8 @@ public class Game {
             players.add(player);
         }
 
-        Random rand = new Random();
-        for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < players.size(); j++) {
-                int nextCard = rand.nextInt(getAdventureDeckSize());
-                players.get(j).hand.add(adventureDeck.remove(nextCard));
-            }
+        for (int i = 0; i < players.size(); i++) {
+            draw(players.get(i), 12);
         }
     }
 
@@ -76,9 +72,28 @@ public class Game {
     }
 
     public void resolveEvent() {
-
+        switch (currCard.getName()) {
+            case "Plague":
+                currPlayer.shields = (currPlayer.shields > 2) ? currPlayer.shields - 2 : 0;
+                break;
+            case "Queen's Favor":
+                draw(currPlayer, 2);
+                break;
+            case "Prosperity":
+                for (int i = 0; i < players.size(); i++) {
+                    draw(players.get(i), 2);
+                }
+                break;
+        }
     }
 
+    private void draw(Player player, int num) {
+        Random rand = new Random();
+        for (int j = 0; j < num; j++) {
+            int nextCard = rand.nextInt(getAdventureDeckSize());
+            player.hand.add(adventureDeck.remove(nextCard));
+        }
+    }
     private boolean checkWinner() {
         for (Player player : players) {
             if (player.shields >= 7) {

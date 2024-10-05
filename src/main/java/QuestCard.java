@@ -9,6 +9,11 @@ public class QuestCard extends Card {
         this.shields = shields;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
     public String toString() {
         return "|Name: " + name + ", Stages: " + stages + ", Shields: " + shields + "|";
     }

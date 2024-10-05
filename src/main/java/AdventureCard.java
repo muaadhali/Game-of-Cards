@@ -7,6 +7,11 @@ public class AdventureCard extends Card{
         this.value = value;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
     public String toString() {
         return "|Name: " + name + ", Value: " + value + "|";
     }

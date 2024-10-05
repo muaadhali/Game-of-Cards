@@ -7,8 +7,11 @@ public class EventCard extends Card {
         this.effect = effect;
     }
 
-    public String toString() {
-        return "|Name: " + name + ", Effect: " + effect + "|";
+    @Override
+    public String getName() {
+        return name;
     }
+
+    public String toString() { return "|Name: " + name + ", Effect: " + effect + "|"; }
 }
 

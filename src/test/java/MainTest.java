@@ -52,6 +52,9 @@ public class MainTest {
         game.initialize();
         game.initializeHands();
 
+        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
+        System.setIn(in);
+
         game.playTurn(game.players.getFirst());
 
         assertEquals(game.players.getFirst(), game.currPlayer);
@@ -92,6 +95,8 @@ public class MainTest {
 
         assertTrue(game.winners.isEmpty());
     }
+
+//------------------------- RESP-5 ------------------------------------------//
 
     @Test
     void RESP_5_test_1() {

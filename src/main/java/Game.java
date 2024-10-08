@@ -101,7 +101,41 @@ public class Game {
 
     public void trim(Scanner playerInput) {
 
-        
+        if (currPlayer.getHandSize() == 12) {
+            return;
+        }
+
+        System.out.println("You have " + currPlayer.getHandSize() + " cards and must trim " + (currPlayer.getHandSize() - 12) + " cards.\n");
+
+        String input;
+
+        for (int i = currPlayer.getHandSize(); i > 12; i--) {
+            System.out.println("Current hand: " + currPlayer.printableHand());
+            System.out.println("Pick a card to trim by entering a number between 1-" + currPlayer.getHandSize() + ": ");
+            input = playerInput.nextLine().replaceAll("\\s+","");
+            if (checkValid(input)) {
+                int discNum = Integer.valueOf(input) - 1;
+                System.out.println("\nYou chose " + (discNum + 1) + ". " + currPlayer.hand.get(discNum) + "\n");
+                adventureDiscard.add(currPlayer.hand.remove(discNum));
+            } else {
+                i++;
+            }
+        }
+    }
+
+
+    private boolean checkValid(String input) {
+        try {
+            if (Integer.valueOf(input) < 1 || Integer.valueOf(input) > currPlayer.getHandSize()) {
+                System.out.println("\nInvalid Input.\n");
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("\nInvalid Input.\n");
+            return false;
+        }
     }
 
     private void drawAdventure(Player player, int num) {

@@ -8,9 +8,9 @@ public class Game {
     public Card currCard;
 
     private ArrayList<AdventureCard> adventureDeck = new ArrayList<>();
-    private ArrayList<Card> eventDeck = new ArrayList<>();
+    public ArrayList<Card> eventDeck = new ArrayList<>();
     private ArrayList<AdventureCard> adventureDiscard = new ArrayList<>();
-    private ArrayList<Card> eventDiscard = new ArrayList<>();
+    public ArrayList<Card> eventDiscard = new ArrayList<>();
     public ArrayList<Player> players = new ArrayList<>();
     public ArrayList<Player> winners = new ArrayList<>();
 
@@ -94,6 +94,7 @@ public class Game {
             player.hand.add(adventureDeck.remove(nextCard));
         }
     }
+
     private boolean checkWinner() {
         for (Player player : players) {
             if (player.shields >= 7) {

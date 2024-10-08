@@ -151,4 +151,44 @@ public class MainTest {
             assertEquals(14, game.players.get(i).getHandSize());
         }
     }
+
+//------------------------- RESP-6 ------------------------------------------//
+
+    @Test
+    void RESP_6_test_1() {
+        Game game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        game.eventDeck.clear();
+        game.eventDeck.add(new EventCard("Queen's Favor", "The player who draws this card immediately draws 2 adventure cards."));
+
+        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
+        System.setIn(in);
+
+        game.playTurn(game.players.getFirst());
+
+        assertEquals(3, game.getAdventureDiscardSize());
+        assertEquals(12, game.players.getFirst().getHandSize());
+    }
+
+    @Test
+    void RESP_6_test_2() {
+        Game game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        game.eventDeck.clear();
+        game.eventDeck.add(new EventCard("Plague", "The player who draws this card immediately loses 2 shields."));
+
+        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
+        System.setIn(in);
+
+        game.playTurn(game.players.getFirst());
+
+        assertEquals(0, game.getAdventureDiscardSize());
+        assertEquals(12, game.players.getFirst().getHandSize());
+    }
 }

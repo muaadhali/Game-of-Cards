@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -52,10 +53,7 @@ public class MainTest {
         game.initialize();
         game.initializeHands();
 
-        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
-        System.setIn(in);
-
-        game.playTurn(game.players.getFirst());
+        game.drawEvent(game.players.getFirst());
 
         assertEquals(game.players.getFirst(), game.currPlayer);
         assertEquals(16, game.getEventDeckSize());
@@ -74,12 +72,12 @@ public class MainTest {
         game.players.getFirst().shields = 7;
         game.players.getLast().shields = 7;
 
-        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
-        System.setIn(in);
-        game.playTurn(game.players.getFirst());
+        game.endTurn();
 
         assertFalse(game.winners.isEmpty());
         assertEquals(game.winners.getFirst(), (game.players.getFirst()));
+        assertTrue(game.winners.contains(game.players.getFirst()));
+        assertTrue(game.winners.contains(game.players.getLast()));
     }
 
     @Test
@@ -89,9 +87,8 @@ public class MainTest {
         game.initialize();
         game.initializeHands();
 
-        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
-        System.setIn(in);
-        game.playTurn(game.players.getFirst());
+        game.drawEvent(game.players.getFirst());
+        game.endTurn();
 
         assertTrue(game.winners.isEmpty());
     }
@@ -158,18 +155,19 @@ public class MainTest {
     void RESP_6_test_1() {
         Game game = new Game(4);
 
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine()).thenReturn("2").thenReturn("55").thenReturn("hj").thenReturn("4");
+
         game.initialize();
         game.initializeHands();
 
-        game.eventDeck.clear();
-        game.eventDeck.add(new EventCard("Queen's Favor", "The player who draws this card immediately draws 2 adventure cards."));
+        game.currCard = new EventCard("Queen's Favor", "The player who draws this card immediately draws 2 adventure cards.");
+        game.currPlayer = game.players.getFirst();
+        game.resolveEvent();
 
-        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
-        System.setIn(in);
+        game.trim(scanner);
 
-        game.playTurn(game.players.getFirst());
-
-        assertEquals(3, game.getAdventureDiscardSize());
+        assertEquals(2, game.getAdventureDiscardSize());
         assertEquals(12, game.players.getFirst().getHandSize());
     }
 
@@ -177,16 +175,17 @@ public class MainTest {
     void RESP_6_test_2() {
         Game game = new Game(4);
 
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine()).thenReturn("2").thenReturn("55").thenReturn("hj").thenReturn("4");
+
         game.initialize();
         game.initializeHands();
 
-        game.eventDeck.clear();
-        game.eventDeck.add(new EventCard("Plague", "The player who draws this card immediately loses 2 shields."));
+        game.currCard = new EventCard("Plague", "The player who draws this card immediately loses 2 shields.");
+        game.currPlayer = game.players.getFirst();
+        game.resolveEvent();
 
-        ByteArrayInputStream in = new ByteArrayInputStream("\n\n".getBytes());
-        System.setIn(in);
-
-        game.playTurn(game.players.getFirst());
+        game.trim(scanner);
 
         assertEquals(0, game.getAdventureDiscardSize());
         assertEquals(12, game.players.getFirst().getHandSize());

@@ -13,12 +13,16 @@ public class Player {
         return hand.size();
     }
 
-    @Override
-    public String toString() {
+    public String printableHand() {
         String cards = "";
         for (int i = 0; i < getHandSize(); i++) {
             cards += (i+1) + ". " + hand.get(i) + " ";
         }
-        return "Player: " + id + "\nHand: " + cards;
+        return cards;
+    }
+
+    @Override
+    public String toString() {
+        return "Player: " + id + "\nHand: " + printableHand();
     }
 }

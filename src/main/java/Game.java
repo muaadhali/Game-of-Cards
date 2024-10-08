@@ -7,9 +7,9 @@ public class Game {
     public Player currPlayer;
     public Card currCard;
 
-    private ArrayList<AdventureCard> adventureDeck = new ArrayList<>();
+    private ArrayList<Card> adventureDeck = new ArrayList<>();
     public ArrayList<Card> eventDeck = new ArrayList<>();
-    private ArrayList<AdventureCard> adventureDiscard = new ArrayList<>();
+    private ArrayList<Card> adventureDiscard = new ArrayList<>();
     public ArrayList<Card> eventDiscard = new ArrayList<>();
     public ArrayList<Player> players = new ArrayList<>();
     public ArrayList<Player> winners = new ArrayList<>();
@@ -40,27 +40,40 @@ public class Game {
         }
 
         for (int i = 0; i < players.size(); i++) {
-            draw(players.get(i), 12);
+            drawAdventure(players.get(i), 12);
         }
     }
 
     public void playTurn(Player currentPlayer) {
-
-        Random rand = new Random();
         Scanner playerInput = new Scanner(System.in);
-        int nextEvent = rand.nextInt(eventDeck.size());
 
-        currCard = eventDeck.get(nextEvent);
-        eventDiscard.add(eventDeck.remove(nextEvent));
-        currPlayer = currentPlayer;
+        drawEvent(currentPlayer);
 
         System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
         System.out.println("CURRENT PLAYER\n" + currPlayer + "\n");
         System.out.println("Card Drawn: " + currCard);
 
+        resolveEvent();
+        trim(playerInput);
+
         System.out.println("Press <Return> to end turn.");
         playerInput.nextLine();
 
+        endTurn();
+
+    }
+
+    public void drawEvent(Player currentPlayer) {
+        Random rand = new Random();
+
+        int nextEvent = rand.nextInt(eventDeck.size());
+
+        currCard = eventDeck.get(nextEvent);
+        eventDiscard.add(eventDeck.remove(nextEvent));
+        currPlayer = currentPlayer;
+    }
+
+    public void endTurn() {
         if (checkWinner()) {
             System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
             System.out.println("WINNERS");
@@ -68,7 +81,6 @@ public class Game {
                 System.out.println(winner);
             }
         }
-
     }
 
     public void resolveEvent() {
@@ -77,17 +89,22 @@ public class Game {
                 currPlayer.shields = (currPlayer.shields > 2) ? currPlayer.shields - 2 : 0;
                 break;
             case "Queen's Favor":
-                draw(currPlayer, 2);
+                drawAdventure(currPlayer, 2);
                 break;
             case "Prosperity":
                 for (int i = 0; i < players.size(); i++) {
-                    draw(players.get(i), 2);
+                    drawAdventure(players.get(i), 2);
                 }
                 break;
         }
     }
 
-    private void draw(Player player, int num) {
+    public void trim(Scanner playerInput) {
+
+        
+    }
+
+    private void drawAdventure(Player player, int num) {
         Random rand = new Random();
         for (int j = 0; j < num; j++) {
             int nextCard = rand.nextInt(getAdventureDeckSize());

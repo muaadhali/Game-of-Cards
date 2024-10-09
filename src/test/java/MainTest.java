@@ -4,6 +4,8 @@ import org.mockito.Mockito;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -189,5 +191,44 @@ public class MainTest {
 
         assertEquals(0, game.getAdventureDiscardSize());
         assertEquals(12, game.players.getFirst().getHandSize());
+    }
+
+//------------------------- RESP-7 ------------------------------------------//
+
+    @Test
+    void RESP_7_test_1() {
+        Game game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+
+        game.players.getFirst().hand.add(new AdventureCard("Foe", 5));
+        game.players.getFirst().hand.add(new AdventureCard("Foe", 10));
+
+        game.players.getLast().hand.add(new AdventureCard("Foe", 5));
+        game.players.getLast().hand.add(new AdventureCard("Foe", 10));
+
+        for (int i = 0; i < game.players.get(1).hand.size(); i++) {
+            if (game.players.get(1).hand.get(i).getName().equals("Foe")) {
+                game.players.get(1).hand.remove(i);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < game.players.get(2).hand.size(); i++) {
+            if (game.players.get(2).hand.get(i).getName().equals("Foe")) {
+                game.players.get(2).hand.remove(i);
+                i--;
+            }
+        }
+
+        ArrayList<Player> eligibleSponsors = game.checkSponsorEligibility();
+
+        assertTrue(eligibleSponsors.contains(game.players.getFirst()));
+        assertTrue(eligibleSponsors.contains(game.players.getLast()));
+        assertEquals(2, eligibleSponsors.size());
+
     }
 }

@@ -99,6 +99,12 @@ public class Game {
         }
     }
 
+    public ArrayList<Player> checkSponsorEligibility() {
+        ArrayList<Player> eligibleSponsors = new ArrayList<>();
+        
+        return eligibleSponsors;
+    }
+
     public void trim(Scanner playerInput) {
 
         if (currPlayer.getHandSize() == 12) {

@@ -49,11 +49,14 @@ public class Game {
 
         drawEvent(currentPlayer);
 
-        System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
-        System.out.println("CURRENT PLAYER\n" + currPlayer + "\n");
+        printPlayer(currentPlayer);
         System.out.println("Card Drawn: " + currCard);
 
-        resolveEvent();
+        if (currCard instanceof QuestCard) {
+            resolveQuest(playerInput);
+        } else {
+            resolveEvent();
+        }
         trim(playerInput);
 
         System.out.println("Press <Return> to end turn.");
@@ -99,9 +102,64 @@ public class Game {
         }
     }
 
+    public void resolveQuest(Scanner playerInput) {
+        ArrayList<Player> eligiblePlayers = checkSponsorEligibility();
+
+        if (eligiblePlayers.isEmpty()) {
+            System.out.println("\nNo one is eligible to sponsor the quest.\n");
+            return;
+        }
+
+        System.out.println("# of Players Eligible To Sponsor Quest " + currCard + ": " + eligiblePlayers.size() + "\n");
+
+        int currPIndex = players.indexOf(currPlayer);
+        for (int i = currPIndex; i < 4; i++) {
+            printPlayer(players.get(i));
+
+            if (eligiblePlayers.contains(players.get(i))) {
+                System.out.println("Would you like to sponsor this quest? (Y/N)\n");
+            } else {
+                System.out.println("You are not eligible to sponsor this quest.\nDouble-press <Return> to continue.\n");
+                playerInput.nextLine();
+                continue;
+            }
+
+            if (playerQuestResponse(playerInput)) {
+                break;
+            }
+        }
+
+        for (int i = 0; i < currPIndex; i++) {
+            if (players.contains(players.get(i))) {
+                System.out.println("Would you like to sponsor this quest? (Y/N)\n");
+            } else {
+                System.out.println("You are not eligible to sponsor this quest.\nDouble-press <Return> to continue.\n");
+                playerInput.nextLine();
+                continue;
+            }
+
+            if (playerQuestResponse(playerInput)) {
+                break;
+            }
+        }
+
+    }
+
     public ArrayList<Player> checkSponsorEligibility() {
         ArrayList<Player> eligibleSponsors = new ArrayList<>();
-        
+        QuestCard quest = (QuestCard) currCard;
+        for (Player player : players) {
+            int count = 0;
+            for (Card j : player.hand) {
+                if (j.getName().equals("Foe")) {
+                    count++;
+                }
+            }
+            if (count >= quest.stages) {
+                eligibleSponsors.add(player);
+            }
+        }
+
         return eligibleSponsors;
     }
 
@@ -129,6 +187,28 @@ public class Game {
         }
     }
 
+    private boolean playerQuestResponse(Scanner playerInput) {
+        String inp;
+
+        while (true) {
+            inp = playerInput.nextLine().replaceAll("\\s+","").toLowerCase();
+
+            if (inp.equals("y") || inp.equals("yes")) {
+                System.out.println("Okay...\n\nDone.");
+                return true;
+            } else if (inp.equals("n") || inp.equals("no")) {
+                System.out.println("Okay.");
+                return false;
+            } else {
+                System.out.println("Invalid Input. Try Again: \n");
+            }
+        }
+    }
+
+    private void printPlayer(Player thisPlayer) {
+        System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
+        System.out.println("CURRENT PLAYER\n" + thisPlayer + "\n");
+    }
 
     private boolean checkValid(String input) {
         try {

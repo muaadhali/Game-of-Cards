@@ -15,6 +15,6 @@ public class QuestCard extends Card {
     }
 
     public String toString() {
-        return "|Name: " + name + ", Stages: " + stages + ", Shields: " + shields + "|";
+        return "|Stages: " + stages + ", Shields: " + shields + "|";
     }
 }

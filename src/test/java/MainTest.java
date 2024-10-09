@@ -203,6 +203,7 @@ public class MainTest {
         game.initializeHands();
 
         game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
 
         game.players.getFirst().hand.add(new AdventureCard("Foe", 5));
         game.players.getFirst().hand.add(new AdventureCard("Foe", 10));
@@ -229,6 +230,5 @@ public class MainTest {
         assertTrue(eligibleSponsors.contains(game.players.getFirst()));
         assertTrue(eligibleSponsors.contains(game.players.getLast()));
         assertEquals(2, eligibleSponsors.size());
-
     }
 }

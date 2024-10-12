@@ -145,6 +145,14 @@ public class Game {
 
     }
 
+    public boolean isCardValid(ArrayList<Card> stage, boolean foe, Card card) {
+        return true;
+    }
+
+    public boolean isStageValid(ArrayList<ArrayList<Card>> stages, ArrayList<Card> stage) {
+        return true;
+    }
+
     public ArrayList<Player> checkSponsorEligibility() {
         ArrayList<Player> eligibleSponsors = new ArrayList<>();
         QuestCard quest = (QuestCard) currCard;

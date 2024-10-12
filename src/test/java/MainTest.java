@@ -231,4 +231,214 @@ public class MainTest {
         assertTrue(eligibleSponsors.contains(game.players.getLast()));
         assertEquals(2, eligibleSponsors.size());
     }
+
+//------------------------- RESP-8 ------------------------------------------//
+
+    @Test
+    void RESP_8_test_1() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine());
+
+        ArrayList<Card> stage = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        Card foe1 = new AdventureCard("Foe", 5);
+
+        assertTrue(game.isCardValid(stage, false, foe1));
+    }
+
+    @Test
+    void RESP_8_test_2() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine());
+
+        ArrayList<Card> stage = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card foe2 = new AdventureCard("Foe", 10);
+
+        stage.add(foe2);
+
+        assertFalse(game.isCardValid(stage, true, foe1));
+    }
+
+    @Test
+    void RESP_8_test_3() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine());
+
+        ArrayList<Card> stage = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+
+        stage.add(foe1);
+
+        assertTrue(game.isCardValid(stage, true, weapon1));
+    }
+
+    @Test
+    void RESP_8_test_4() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine());
+
+        ArrayList<Card> stage = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+        Card weapon2 = new AdventureCard("Dagger", 5);
+
+        stage.add(foe1);
+        stage.add(weapon1);
+
+        assertFalse(game.isCardValid(stage, true, weapon2));
+    }
+
+    @Test
+    void RESP_8_test_5() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine());
+
+        ArrayList<Card> stage = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+        Card weapon2 = new AdventureCard("Sword", 10);
+
+        stage.add(foe1);
+        stage.add(weapon1);
+
+        assertTrue(game.isCardValid(stage, true, weapon2));
+    }
+
+    @Test
+    void RESP_8_test_6() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine());
+
+        ArrayList<Card> stage = new ArrayList<>();
+        ArrayList<Card> stage2 = new ArrayList<>();
+        ArrayList<ArrayList<Card>> stages = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card foe2 = new AdventureCard("Foe", 10);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+
+        stage.add(foe1);
+        stages.add(stage);
+
+        stage2.add(foe2);
+        stage2.add(weapon1);
+
+
+        assertTrue(game.isStageValid(stages, stage2));
+    }
+
+    @Test
+    void RESP_8_test_7() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine());
+
+        ArrayList<Card> stage = new ArrayList<>();
+        ArrayList<Card> stage2 = new ArrayList<>();
+        ArrayList<ArrayList<Card>> stages = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card foe2 = new AdventureCard("Foe", 10);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+
+        stage.add(foe2);
+        stage.add(weapon1);
+        stages.add(stage);
+
+        stage2.add(foe1);
+
+
+        assertFalse(game.isStageValid(stages, stage2));
+    }
+
+    @Test
+    void RESP_8_test_8() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine());
+
+        ArrayList<Card> stage = new ArrayList<>();
+        ArrayList<Card> stage2 = new ArrayList<>();
+        ArrayList<ArrayList<Card>> stages = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card foe2 = new AdventureCard("Foe", 10);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+
+        stage.add(foe1);
+        stage.add(weapon1);
+        stages.add(stage);
+
+        stage2.add(foe2);
+
+        assertFalse(game.isStageValid(stages, stage2));
+    }
 }

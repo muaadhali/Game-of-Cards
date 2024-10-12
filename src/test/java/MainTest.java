@@ -237,8 +237,6 @@ public class MainTest {
     @Test
     void RESP_8_test_1() {
         Game game = new Game(4);
-        Scanner scanner = Mockito.mock(Scanner.class);
-        Mockito.when(scanner.nextLine());
 
         ArrayList<Card> stage = new ArrayList<>();
 
@@ -251,14 +249,12 @@ public class MainTest {
 
         Card foe1 = new AdventureCard("Foe", 5);
 
-        assertTrue(game.isCardValid(stage, false, foe1));
+        assertTrue(game.isCardValid(stage, foe1));
     }
 
     @Test
     void RESP_8_test_2() {
         Game game = new Game(4);
-        Scanner scanner = Mockito.mock(Scanner.class);
-        Mockito.when(scanner.nextLine());
 
         ArrayList<Card> stage = new ArrayList<>();
 
@@ -274,14 +270,12 @@ public class MainTest {
 
         stage.add(foe2);
 
-        assertFalse(game.isCardValid(stage, true, foe1));
+        assertFalse(game.isCardValid(stage, foe1));
     }
 
     @Test
     void RESP_8_test_3() {
         Game game = new Game(4);
-        Scanner scanner = Mockito.mock(Scanner.class);
-        Mockito.when(scanner.nextLine());
 
         ArrayList<Card> stage = new ArrayList<>();
 
@@ -297,14 +291,12 @@ public class MainTest {
 
         stage.add(foe1);
 
-        assertTrue(game.isCardValid(stage, true, weapon1));
+        assertTrue(game.isCardValid(stage, weapon1));
     }
 
     @Test
     void RESP_8_test_4() {
         Game game = new Game(4);
-        Scanner scanner = Mockito.mock(Scanner.class);
-        Mockito.when(scanner.nextLine());
 
         ArrayList<Card> stage = new ArrayList<>();
 
@@ -322,14 +314,12 @@ public class MainTest {
         stage.add(foe1);
         stage.add(weapon1);
 
-        assertFalse(game.isCardValid(stage, true, weapon2));
+        assertFalse(game.isCardValid(stage, weapon2));
     }
 
     @Test
     void RESP_8_test_5() {
         Game game = new Game(4);
-        Scanner scanner = Mockito.mock(Scanner.class);
-        Mockito.when(scanner.nextLine());
 
         ArrayList<Card> stage = new ArrayList<>();
 
@@ -347,14 +337,12 @@ public class MainTest {
         stage.add(foe1);
         stage.add(weapon1);
 
-        assertTrue(game.isCardValid(stage, true, weapon2));
+        assertTrue(game.isCardValid(stage, weapon2));
     }
 
     @Test
     void RESP_8_test_6() {
         Game game = new Game(4);
-        Scanner scanner = Mockito.mock(Scanner.class);
-        Mockito.when(scanner.nextLine());
 
         ArrayList<Card> stage = new ArrayList<>();
         ArrayList<Card> stage2 = new ArrayList<>();
@@ -378,14 +366,12 @@ public class MainTest {
         stage2.add(weapon1);
 
 
-        assertTrue(game.isStageValid(stages, stage2));
+        assertTrue(game.isStageValid(stages, stage2, true));
     }
 
     @Test
     void RESP_8_test_7() {
         Game game = new Game(4);
-        Scanner scanner = Mockito.mock(Scanner.class);
-        Mockito.when(scanner.nextLine());
 
         ArrayList<Card> stage = new ArrayList<>();
         ArrayList<Card> stage2 = new ArrayList<>();
@@ -409,14 +395,12 @@ public class MainTest {
         stage2.add(foe1);
 
 
-        assertFalse(game.isStageValid(stages, stage2));
+        assertFalse(game.isStageValid(stages, stage2, true));
     }
 
     @Test
     void RESP_8_test_8() {
         Game game = new Game(4);
-        Scanner scanner = Mockito.mock(Scanner.class);
-        Mockito.when(scanner.nextLine());
 
         ArrayList<Card> stage = new ArrayList<>();
         ArrayList<Card> stage2 = new ArrayList<>();
@@ -439,6 +423,6 @@ public class MainTest {
 
         stage2.add(foe2);
 
-        assertFalse(game.isStageValid(stages, stage2));
+        assertFalse(game.isStageValid(stages, stage2, true));
     }
 }

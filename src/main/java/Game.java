@@ -13,6 +13,7 @@ public class Game {
     public ArrayList<Card> eventDiscard = new ArrayList<>();
     public ArrayList<Player> players = new ArrayList<>();
     public ArrayList<Player> winners = new ArrayList<>();
+    public ArrayList<ArrayList<Card>> quest = new ArrayList<>();
 
     public Game(int playerNum) {
         this.playerNum = playerNum;
@@ -125,6 +126,7 @@ public class Game {
             }
 
             if (playerQuestResponse(playerInput)) {
+                playQuest(players.get(i));
                 break;
             }
         }
@@ -139,18 +141,51 @@ public class Game {
             }
 
             if (playerQuestResponse(playerInput)) {
+                playQuest(players.get(i));
                 break;
             }
         }
 
     }
 
-    public boolean isCardValid(ArrayList<Card> stage, boolean foe, Card card) {
+    public boolean isCardValid(ArrayList<Card> stage, Card card) {
+        for (Card c : stage) {
+            if (card.getName().equals(c.getName())) {
+                System.out.println("You cannot repeat cards in the stage.");
+                return false;
+            }
+        }
+
         return true;
     }
 
-    public boolean isStageValid(ArrayList<ArrayList<Card>> stages, ArrayList<Card> stage) {
-        return true;
+    public boolean isStageValid(ArrayList<ArrayList<Card>> stages, ArrayList<Card> currStage, boolean foe) {
+        int previous = 0, current = 0;
+
+        for (Card i : currStage) {
+            current += ((AdventureCard) i).value;
+        }
+
+        if (!stages.isEmpty()) {
+            for (Card i : stages.getLast()) {
+                previous += ((AdventureCard) i).value;
+            }
+        }
+
+        if (!foe) {
+            System.out.println("The stage must contain a foe.");
+        }
+
+        if (currStage.isEmpty()) {
+            System.out.println("A stage cannot be empty.");
+        }
+
+        if (previous >= current) {
+            System.out.println("Insufficient value for this stage.");
+            System.out.println("Previous Stage: " + previous + " Current Stage: " + current + "\n");
+        }
+
+        return (current > previous) && foe;
     }
 
     public ArrayList<Player> checkSponsorEligibility() {
@@ -195,6 +230,93 @@ public class Game {
         }
     }
 
+    public void playQuest(Player player) {
+        Scanner scanner = new Scanner(System.in);
+        String input = "";
+
+        printPlayer(player);
+        for (int j = 0; j < ((QuestCard) currCard).stages; j++) {
+            ArrayList<Card> stage = new ArrayList<>();
+            boolean foeAdded = false;
+
+            System.out.println("\nBuilding Stage " + (j+1) + "...");
+
+            while (!player.hand.isEmpty() && !input.equalsIgnoreCase("quit")) {
+                System.out.println("Pick a card from 1-" + player.getHandSize() + ".");
+                System.out.println("Hand: " + player.printableHand());
+
+                input = scanner.nextLine().replaceAll("\\s", "");
+
+                while (!input.equalsIgnoreCase("quit") && !checkValid(input)) {
+                    input = scanner.nextLine().replaceAll("\\s", "");
+                }
+
+                if (input.equalsIgnoreCase("quit")) {
+                    ArrayList<ArrayList<Card>> temp = quest;
+                    if (isStageValid(temp, stage, foeAdded)) {
+                        System.out.println("Stage is Valid.\n");
+                        quest.add(stage);
+                        break;
+                    } else {
+                        input = "";
+                        continue;
+                    }
+                }
+
+                int sponsorChoice = Integer.parseInt(input) - 1;
+                Card tempCard = player.hand.get(sponsorChoice);
+                if (isCardValid(stage, tempCard)) {
+                    foeAdded = tempCard.getName().equals("Foe") || foeAdded;
+                    stage.add(tempCard);
+                    adventureDiscard.add(player.hand.remove(sponsorChoice));
+                }
+
+                System.out.print("\nStage so far: \nStage #" + (j+1) + ": ");
+                int value = 0;
+                for (Card c : stage) {
+                    value += ((AdventureCard) c).value;
+                }
+                System.out.println(" Value: " + value + " Cards: " + stage);
+            }
+
+            input = "";
+
+            System.out.println("\nQuest:");
+            int stageNum = 1;
+            for (ArrayList<Card> i : quest) {
+                int value = 0;
+                for (Card c : i) {
+                    value += ((AdventureCard) c).value;
+                }
+                System.out.println("Stage #" + stageNum + " Value: " + value + " Cards: " + i);
+                stageNum++;
+            }
+
+            if (player.hand.isEmpty()) {
+                System.out.println("Player ran out of cards.");
+                break;
+            }
+
+            System.out.println("\nFinished Stage " + (j+1) + ". " + (((QuestCard) currCard).stages - j - 1) + " stage(s) left.\n\n");
+        }
+
+        System.out.println((quest.size() == ((QuestCard) currCard).stages) ? "Valid Quest.\n" : "Invalid Quest.\n");
+
+        System.out.println("\nQuest:");
+        int stageNum = 1;
+        for (ArrayList<Card> i : quest) {
+            int value = 0;
+            for (Card c : i) {
+                value += ((AdventureCard) c).value;
+            }
+            System.out.println("Stage #" + stageNum + " Value: " + value + " Cards: " + i);
+            stageNum++;
+        }
+
+        quest.clear();
+
+    }
+
     private boolean playerQuestResponse(Scanner playerInput) {
         String inp;
 
@@ -202,7 +324,7 @@ public class Game {
             inp = playerInput.nextLine().replaceAll("\\s+","").toLowerCase();
 
             if (inp.equals("y") || inp.equals("yes")) {
-                System.out.println("Okay...\n\nDone.");
+                System.out.println("Okay...\n\n");
                 return true;
             } else if (inp.equals("n") || inp.equals("no")) {
                 System.out.println("Okay.");
@@ -346,6 +468,11 @@ public class Game {
         game.initialize();
         game.initializeHands();
 
-        game.playTurn(game.players.getFirst());
+        Scanner scanner = new Scanner(System.in);
+
+        game.currPlayer = game.players.getFirst();
+        game.currCard = new QuestCard("Quest", 2, 2);
+
+        game.resolveQuest(scanner);
     }
 }

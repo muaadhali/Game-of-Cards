@@ -425,4 +425,51 @@ public class MainTest {
 
         assertFalse(game.isStageValid(stages, stage2, true));
     }
+
+//------------------------- RESP-8 ------------------------------------------//
+
+    @Test
+    void RESP_9_test_1() {
+        Game game = new Game(4);
+
+        ArrayList<Card> stage = new ArrayList<>();
+        ArrayList<Card> stage2 = new ArrayList<>();
+        ArrayList<ArrayList<Card>> stages = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        for (Player i : game.players) {
+            i.hand.clear();
+        }
+
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card foe2 = new AdventureCard("Foe", 10);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+        Card weapon2 = new AdventureCard("Sword", 10);
+        Card weapon3 = new AdventureCard("Excalibur", 30);
+
+        game.players.getFirst().hand.add(weapon1);
+        game.players.getFirst().hand.add(weapon2);
+        game.players.getFirst().hand.add(weapon3);
+        game.players.getLast().hand.add(weapon3);
+
+        stage.add(foe1);
+        stage.add(weapon1);
+        stages.add(stage);
+
+        stage2.add(foe2);
+        stage2.add(weapon2);
+        stages.add(stage2);
+
+        assertTrue(game.eligibleForStage(game.players.getFirst(), stages.getFirst()));
+        assertFalse(game.eligibleForStage(game.players.get(1), stages.getFirst()));
+        assertFalse(game.eligibleForStage(game.players.get(2), stages.getFirst()));
+        assertTrue(game.eligibleForStage(game.players.getLast(), stages.getFirst()));
+    }
 }

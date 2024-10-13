@@ -239,7 +239,7 @@ public class Game {
             ArrayList<Card> stage = new ArrayList<>();
             boolean foeAdded = false;
 
-            System.out.println("\nBuilding Stage " + (j+1) + "...");
+            System.out.println("\n**Building Stage " + (j+1) + "...");
 
             while (!player.hand.isEmpty() && !input.equalsIgnoreCase("quit")) {
                 System.out.println("Pick a card from 1-" + player.getHandSize() + ".");
@@ -315,6 +315,10 @@ public class Game {
 
         quest.clear();
 
+    }
+
+    public boolean eligibleForStage(Player player, ArrayList<Card> stage) {
+        return true;
     }
 
     private boolean playerQuestResponse(Scanner playerInput) {

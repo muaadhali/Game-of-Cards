@@ -1,11 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -467,9 +463,9 @@ public class MainTest {
         stage2.add(weapon2);
         stages.add(stage2);
 
-        assertTrue(game.eligibleForStage(game.players.getFirst(), stages.getFirst()));
-        assertFalse(game.eligibleForStage(game.players.get(1), stages.getFirst()));
-        assertFalse(game.eligibleForStage(game.players.get(2), stages.getFirst()));
-        assertTrue(game.eligibleForStage(game.players.getLast(), stages.getFirst()));
+        assertTrue(game.isEligibleForStage(stages.getFirst(), game.players.getFirst()));
+        assertFalse(game.isEligibleForStage(stages.getFirst(), game.players.get(1)));
+        assertFalse(game.isEligibleForStage(stages.getFirst(), game.players.get(2)));
+        assertTrue(game.isEligibleForStage(stages.getFirst(), game.players.getLast()));
     }
 }

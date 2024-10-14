@@ -4,9 +4,11 @@ public class Player {
     public ArrayList<Card> hand = new ArrayList<>();
     private int id;
     public int shields;
+    public int draw;
 
     public Player(int id) {
         this.id = id;
+        this.draw = 0;
     }
 
     public int getHandSize() {
@@ -19,6 +21,10 @@ public class Player {
             cards += (i+1) + ". " + hand.get(i) + " ";
         }
         return cards;
+    }
+
+    public int getId () {
+        return id;
     }
 
     @Override

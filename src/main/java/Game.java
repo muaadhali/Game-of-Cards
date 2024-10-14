@@ -6,6 +6,7 @@ public class Game {
     private int playerNum;
     public Player currPlayer;
     public Card currCard;
+    private Player currSponsor;
 
     private ArrayList<Card> adventureDeck = new ArrayList<>();
     public ArrayList<Card> eventDeck = new ArrayList<>();
@@ -41,12 +42,17 @@ public class Game {
         }
 
         for (int i = 0; i < players.size(); i++) {
-            drawAdventure(players.get(i), 12);
+            players.get(i).draw = 12;
+            drawAdventure(i, players.get(i).draw);
         }
     }
 
     public void playTurn(Player currentPlayer) {
         Scanner playerInput = new Scanner(System.in);
+
+        if (eventDeck.isEmpty()) {
+            refillDeck(eventDeck, eventDiscard);
+        }
 
         drawEvent(currentPlayer);
 
@@ -93,11 +99,13 @@ public class Game {
                 currPlayer.shields = (currPlayer.shields > 2) ? currPlayer.shields - 2 : 0;
                 break;
             case "Queen's Favor":
-                drawAdventure(currPlayer, 2);
+                currPlayer.draw += 2;
+                drawAdventure(currPlayer.getId()-1, 2);
                 break;
             case "Prosperity":
                 for (int i = 0; i < players.size(); i++) {
-                    drawAdventure(players.get(i), 2);
+                    players.get(i).draw += 2;
+                    drawAdventure(players.get(i).getId()-1, 2);
                 }
                 break;
         }
@@ -150,24 +158,38 @@ public class Game {
                 }
             }
         }
+        currSponsor = players.get(sponsor);
+        setupQuest(players.get(sponsor), playerInput);
+        playQuest(playerInput);
 
-        setupQuest(players.get(sponsor));
-        playQuest();
+        for (Player p : players) {
+            System.out.println(p);
+        }
+        for (Player p : players) {
+            drawAdventure(p.getId() -1, p.draw);
+        }
 
+        for (Player p : players) {
+            System.out.println(p);
+        }
+
+        currSponsor = null;
 
     }
 
-    public void playQuest() {
+    public void playQuest(Scanner scanner) {
         HashMap<Player,Integer> eligiblePlayers = new HashMap<>();
         boolean questComplete = false;
 
         for (int i = 0; i < players.size(); i++) {
-            eligiblePlayers.put(players.get(i), i+1);
+            if (players.get(i) != currSponsor) {
+                eligiblePlayers.put(players.get(i), i+1);
+            }
         }
 
         for (int i = 0; i < quest.size(); i++) {
             System.out.println("Playing Stage #" + (i+1) + "...");
-            if (!playStage(quest.get(i), eligiblePlayers)) {
+            if (!playStage(quest.get(i), eligiblePlayers, scanner)) {
                 break;
             }
             questComplete = (i == quest.size()-1);
@@ -182,8 +204,7 @@ public class Game {
         quest.clear();
     }
 
-    public boolean playStage(ArrayList<Card> stage, HashMap<Player, Integer> eligiblePlayers) {
-        Scanner scanner = new Scanner(System.in);
+    public boolean playStage(ArrayList<Card> stage, HashMap<Player, Integer> eligiblePlayers, Scanner scanner) {
         ArrayList<Player> removePlayers = new ArrayList<>();
         String playerInput = "";
         populateEligiblePlayers(stage, eligiblePlayers);
@@ -196,7 +217,7 @@ public class Game {
         System.out.println("Eligible Players:");
 
         for (Player p : eligiblePlayers.keySet()) {
-            System.out.println("Player " + eligiblePlayers.get(p));
+            System.out.println("Player " + p.getId());
         }
 
         for (Player p : eligiblePlayers.keySet()) {
@@ -339,8 +360,7 @@ public class Game {
         }
     }
 
-    public void setupQuest(Player player) {
-        Scanner scanner = new Scanner(System.in);
+    public void setupQuest(Player player, Scanner scanner) {
         String input = "";
 
         printPlayer(player);
@@ -377,7 +397,20 @@ public class Game {
                 if (isCardValid(stage, tempCard)) {
                     foeAdded = tempCard.getName().equals("Foe") || foeAdded;
                     stage.add(tempCard);
+                    player.draw++;
                     adventureDiscard.add(player.hand.remove(sponsorChoice));
+                }
+
+                if (player.hand.isEmpty()) {
+                    ArrayList<ArrayList<Card>> temp = quest;
+                    if (isStageValid(temp, stage, foeAdded)) {
+                        System.out.println("Stage is Valid.\n");
+                        quest.add(stage);
+                        break;
+                    } else {
+                        input = "";
+                        continue;
+                    }
                 }
 
                 System.out.print("\nStage so far: \nStage #" + (j+1) + ": ");
@@ -461,11 +494,29 @@ public class Game {
         }
     }
 
-    private void drawAdventure(Player player, int num) {
+    private void drawAdventure(int index, int num) {
         Random rand = new Random();
+
+        System.out.println("in draw");
+
         for (int j = 0; j < num; j++) {
+            if (getAdventureDiscardSize() == 0) {
+                refillDeck(adventureDeck, adventureDiscard);
+            }
             int nextCard = rand.nextInt(getAdventureDeckSize());
-            player.hand.add(adventureDeck.remove(nextCard));
+            players.get(index).hand.add(adventureDeck.remove(nextCard));
+            players.get(index).draw--;
+        }
+    }
+
+    private void refillDeck(ArrayList<Card> deck, ArrayList<Card> discard) {
+        Random rand = new Random();
+
+        int totalAdvCards = discard.size();
+
+        for (int i = 0; i < totalAdvCards; i++) {
+            int nextCard = rand.nextInt(discard.size());
+            deck.add(discard.remove(nextCard));
         }
     }
 

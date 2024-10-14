@@ -519,4 +519,45 @@ public class MainTest {
 
         assertEquals(2, game.players.getFirst().getHandSize());
     }
+
+//------------------------- RESP-11 ------------------------------------------//
+
+    @Test
+    @DisplayName("Check a player successfully sets up his attack and the cards are no longer in his hand")
+    void RESP_11_test_1() {
+        Game game = new Game(4);
+        ArrayList<Card> stage = new ArrayList<>();
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine()).thenReturn("1").thenReturn("1").thenReturn("quit");
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 1, 1);
+        game.currPlayer = game.players.getFirst();
+
+        game.players.getFirst().hand.clear();
+
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+        Card weapon2 = new AdventureCard("Sword", 10);
+        Card weapon3 = new AdventureCard("Excalibur", 30);
+
+        game.players.getFirst().hand.add(weapon1);
+        game.players.getFirst().hand.add(weapon2);
+        game.players.getFirst().hand.add(weapon3);
+
+        stage.add(foe1);
+        stage.add(weapon1);
+        game.quest.add(stage);
+
+        game.setupAttack(game.players.getFirst(), stage, scanner);
+
+        assertEquals(1, game.players.getFirst().getHandSize());
+        assertEquals(weapon1, game.attack.get(game.players.getFirst().getId()).getFirst());
+        assertEquals(weapon2, game.attack.get(game.players.getFirst().getId()).getLast());
+    }
+
 }

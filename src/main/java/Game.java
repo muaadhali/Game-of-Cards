@@ -15,6 +15,7 @@ public class Game {
     public ArrayList<Player> players = new ArrayList<>();
     public ArrayList<Player> winners = new ArrayList<>();
     public ArrayList<ArrayList<Card>> quest = new ArrayList<>();
+    public HashMap<Integer, ArrayList<Card>> attack = new HashMap<>();
 
     public Game(int playerNum) {
         this.playerNum = playerNum;
@@ -202,6 +203,10 @@ public class Game {
         }
 
         quest.clear();
+    }
+
+    public void setupAttack(Player attacker, ArrayList<Card> stage, Scanner scanner) {
+
     }
 
     public boolean playStage(ArrayList<Card> stage, HashMap<Player, Integer> eligiblePlayers, Scanner scanner) {

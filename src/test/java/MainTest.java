@@ -11,6 +11,7 @@ public class MainTest {
 //------------------------- RESP-1 ------------------------------------------//
 
     @Test
+    @DisplayName("Check initialized adventure deck size")
     void RESP_1_test_1(){
         Game game = new Game(4);
         game.initialize();
@@ -19,6 +20,7 @@ public class MainTest {
 
     }
     @Test
+    @DisplayName("Check event deck size")
     void RESP_1_test_2() {
         Game game = new Game(4);
         game.initialize();
@@ -30,6 +32,7 @@ public class MainTest {
 //------------------------- RESP-2 ------------------------------------------//
 
     @Test
+    @DisplayName("Check player hand size and adventure deck size after initializing hands")
     void RESP_2_test_1() {
         Game game = new Game(4);
         game.initialize();
@@ -47,6 +50,7 @@ public class MainTest {
 //------------------------- RESP-3 ------------------------------------------//
 
     @Test
+    @DisplayName("Check event deck and discard pile size after drawing event card")
     void RESP_3_test_1() {
         Game game = new Game(4);
         game.initialize();
@@ -62,6 +66,7 @@ public class MainTest {
 //------------------------- RESP-4 ------------------------------------------//
 
     @Test
+    @DisplayName("Check winners after players reach max shields")
     void RESP_4_test_1() {
         Game game = new Game(4);
 
@@ -80,6 +85,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check no winners when players are not max shields")
     void RESP_4_test_2() {
         Game game = new Game(4);
 
@@ -95,6 +101,7 @@ public class MainTest {
 //------------------------- RESP-5 ------------------------------------------//
 
     @Test
+    @DisplayName("Check player shields after Plague event")
     void RESP_5_test_1() {
         Game game = new Game(4);
 
@@ -113,6 +120,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check player hand size after Queen's Favor event")
     void RESP_5_test_2() {
         Game game = new Game(4);
 
@@ -130,6 +138,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check players' hand sizes after Prosperity event")
     void RESP_5_test_3() {
         Game game = new Game(4);
 
@@ -151,6 +160,7 @@ public class MainTest {
 //------------------------- RESP-6 ------------------------------------------//
 
     @Test
+    @DisplayName("Check player hand size after trimming")
     void RESP_6_test_1() {
         Game game = new Game(4);
 
@@ -171,6 +181,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check player hands after trimming when hand size is normal")
     void RESP_6_test_2() {
         Game game = new Game(4);
 
@@ -193,6 +204,7 @@ public class MainTest {
 //------------------------- RESP-7 ------------------------------------------//
 
     @Test
+    @DisplayName("Check number of eligible sponsors for quest")
     void RESP_7_test_1() {
         Game game = new Game(4);
 
@@ -232,6 +244,7 @@ public class MainTest {
 //------------------------- RESP-8 ------------------------------------------//
 
     @Test
+    @DisplayName("Check validity of card being added to a stage")
     void RESP_8_test_1() {
         Game game = new Game(4);
 
@@ -250,6 +263,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check validity of card being added to a stage")
     void RESP_8_test_2() {
         Game game = new Game(4);
 
@@ -271,6 +285,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check validity of card being added to a stage")
     void RESP_8_test_3() {
         Game game = new Game(4);
 
@@ -292,6 +307,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check validity of card being added to a stage")
     void RESP_8_test_4() {
         Game game = new Game(4);
 
@@ -315,6 +331,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check validity of card being added to a stage")
     void RESP_8_test_5() {
         Game game = new Game(4);
 
@@ -338,6 +355,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check validity of card being added to a stage")
     void RESP_8_test_6() {
         Game game = new Game(4);
 
@@ -367,6 +385,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check validity of card being added to a stage")
     void RESP_8_test_7() {
         Game game = new Game(4);
 
@@ -396,6 +415,7 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Check validity of card being added to a stage")
     void RESP_8_test_8() {
         Game game = new Game(4);
 
@@ -426,6 +446,7 @@ public class MainTest {
 //------------------------- RESP-9 ------------------------------------------//
 
     @Test
+    @DisplayName("Check player eligibility for tackling a stage")
     void RESP_9_test_1() {
         Game game = new Game(4);
 
@@ -473,6 +494,7 @@ public class MainTest {
 //------------------------- RESP-10 ------------------------------------------//
 
     @Test
+    @DisplayName("Check player draws same number of cards used in setting up quest")
     void RESP_10_test_1() {
         Game game = new Game(4);
         Scanner scanner = Mockito.mock(Scanner.class);

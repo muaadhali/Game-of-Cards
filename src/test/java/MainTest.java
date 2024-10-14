@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -422,7 +423,7 @@ public class MainTest {
         assertFalse(game.isStageValid(stages, stage2, true));
     }
 
-//------------------------- RESP-8 ------------------------------------------//
+//------------------------- RESP-9 ------------------------------------------//
 
     @Test
     void RESP_9_test_1() {
@@ -467,5 +468,33 @@ public class MainTest {
         assertFalse(game.isEligibleForStage(stages.getFirst(), game.players.get(1)));
         assertFalse(game.isEligibleForStage(stages.getFirst(), game.players.get(2)));
         assertTrue(game.isEligibleForStage(stages.getFirst(), game.players.getLast()));
+    }
+
+//------------------------- RESP-10 ------------------------------------------//
+
+    @Test
+    void RESP_10_test_1() {
+        Game game = new Game(4);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine()).thenReturn("yes").thenReturn("1").thenReturn("1").thenReturn("quit").thenReturn("n").thenReturn("n").thenReturn("n");
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 1, 1);
+        game.currPlayer = game.players.getFirst();
+
+        game.players.getFirst().hand.clear();
+
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+
+        game.players.getFirst().hand.add(weapon1);
+        game.players.getFirst().hand.add(foe1);
+
+        game.resolveQuest(scanner);
+
+        assertEquals(2, game.players.getFirst().getHandSize());
     }
 }

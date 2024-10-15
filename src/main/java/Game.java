@@ -285,15 +285,37 @@ public class Game {
             }
         }
 
+        resolveAttack(removePlayers, stage);
 
         for (Player p : removePlayers) {
             eligiblePlayers.remove(p);
         }
+
         return true;
     }
 
     public void resolveAttack(ArrayList<Player> removePlayers, ArrayList<Card> stage) {
+        int stageVal = 0;
+        for (Card c : stage) {
+            stageVal += ((AdventureCard) c).value;
+        }
 
+        for (int id : attack.keySet()) {
+            if (!removePlayers.contains(players.get(id-1))) {
+                int attackVal = 0;
+                for (Card c : attack.get(id)) {
+                    attackVal += ((AdventureCard) c).value;
+                }
+
+                if (stageVal > attackVal) {
+                    System.out.println("Player " + id + " failed their attack!");
+                    removePlayers.add(players.get(id-1));
+                } else {
+                    System.out.println("Player " + id + " succeeded in their attack!");
+                }
+            }
+            attack.get(id).clear();
+        }
     }
 
     public void populateEligiblePlayers(ArrayList<Card> stage, HashMap<Player, Integer> playerPool) {

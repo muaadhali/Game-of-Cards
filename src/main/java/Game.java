@@ -8,9 +8,9 @@ public class Game {
     public Card currCard;
     public Player currSponsor;
 
-    private ArrayList<Card> adventureDeck = new ArrayList<>();
+    public ArrayList<Card> adventureDeck = new ArrayList<>();
     public ArrayList<Card> eventDeck = new ArrayList<>();
-    private ArrayList<Card> adventureDiscard = new ArrayList<>();
+    public ArrayList<Card> adventureDiscard = new ArrayList<>();
     public ArrayList<Card> eventDiscard = new ArrayList<>();
     public ArrayList<Player> players = new ArrayList<>();
     public ArrayList<Player> winners = new ArrayList<>();
@@ -187,11 +187,11 @@ public class Game {
     }
 
     public void playQuest(Scanner scanner) {
-        HashMap<Player,Integer> eligiblePlayers = new HashMap<>();
+        ArrayList<Player> eligiblePlayers = new ArrayList<>();
 
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i) != currSponsor) {
-                eligiblePlayers.put(players.get(i), i+1);
+                eligiblePlayers.add(players.get(i));
             }
         }
 
@@ -208,12 +208,12 @@ public class Game {
         currSponsor = null;
     }
 
-    public void rewardPlayers(HashMap<Player, Integer> winners) {
+    public void rewardPlayers(ArrayList<Player> winners) {
         for (Player p : players) {
-            if (winners.containsKey(p)){
+            if (winners.contains(p)){
                 System.out.println("Player " + p.getId() + " wins " + ((QuestCard) currCard).shields + " shields!");
+                winners.get(winners.indexOf(p)).shields += ((QuestCard) currCard).shields;
                 System.out.println("Player " + p.getId() + " shields: " + p.shields);
-                p.shields += ((QuestCard) currCard).shields;
             }
         }
     }
@@ -263,7 +263,7 @@ public class Game {
         System.out.println("Attack set.");
     }
 
-    public boolean playStage(ArrayList<Card> stage, HashMap<Player, Integer> eligiblePlayers, Scanner scanner) {
+    public boolean playStage(ArrayList<Card> stage, ArrayList<Player> eligiblePlayers, Scanner scanner) {
         ArrayList<Player> removePlayers = new ArrayList<>();
         String playerInput = "";
 
@@ -277,11 +277,11 @@ public class Game {
 
         System.out.println("Eligible Players:");
 
-        for (Player p : eligiblePlayers.keySet()) {
+        for (Player p : eligiblePlayers) {
             System.out.println("Player " + p.getId());
         }
 
-        for (Player p : eligiblePlayers.keySet()) {
+        for (Player p : eligiblePlayers) {
             printPlayer(p);
             System.out.println("Would you like to tackle this stage? (Y/N)");
 
@@ -339,9 +339,9 @@ public class Game {
         }
     }
 
-    public void populateEligiblePlayers(ArrayList<Card> stage, ArrayList<Player> removePlayers, HashMap<Player, Integer> playerPool) {
+    public void populateEligiblePlayers(ArrayList<Card> stage, ArrayList<Player> removePlayers, ArrayList<Player> playerPool) {
 
-        for (Player p : playerPool.keySet()) {
+        for (Player p : playerPool) {
             if (!isEligibleForStage(stage, p)) {
                 removePlayers.add(p);
             }

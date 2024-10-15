@@ -3,8 +3,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.exceptions.verification.NoInteractionsWanted;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -696,7 +698,152 @@ public class MainTest {
     @DisplayName("A-TEST JP-Scenario")
     void A_TEST_JP_SCENARIO() {
         Game game = new Game(4);
+        Scanner scanner1 = Mockito.mock(Scanner.class);
+        Scanner scanner2 = Mockito.mock(Scanner.class);
+        Scanner scanner3 = Mockito.mock(Scanner.class);
+        Scanner scanner4 = Mockito.mock(Scanner.class);
+        Scanner scanner5 = Mockito.mock(Scanner.class);
 
+        Mockito.when(scanner1.nextLine()).thenReturn("1").thenReturn("7").thenReturn("quit").thenReturn("2").thenReturn("5").thenReturn("quit").thenReturn("2").thenReturn("3").thenReturn("4").thenReturn("quit").thenReturn("2").thenReturn("3").thenReturn("quit");
+        Mockito.when(scanner2.nextLine()).thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("4").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("7").thenReturn("quit");
+        Mockito.when(scanner3.nextLine()).thenReturn("yes").thenReturn("5").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("8").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("6").thenReturn("6").thenReturn("quit");
+        Mockito.when(scanner4.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("6").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("8").thenReturn("5").thenReturn("5").thenReturn("quit");
+        Mockito.when(scanner5.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("4").thenReturn("5").thenReturn("quit").thenReturn("yes").thenReturn("4").thenReturn("7").thenReturn("5").thenReturn("4").thenReturn("quit");
+        game.initialize();
+        game.initializeHands();
+
+        for (int i = 0; i < 12; i++) {
+            game.adventureDeck.add(game.players.get(0).hand.removeFirst());
+            game.adventureDeck.add(game.players.get(1).hand.removeFirst());
+            game.adventureDeck.add(game.players.get(2).hand.removeFirst());
+            game.adventureDeck.add(game.players.get(3).hand.removeFirst());
+        }
+
+        addCard("Foe", 5, 2, game.players.getFirst(), game);
+        addCard("Foe", 15, 2, game.players.getFirst(), game);
+        addCard("Dagger", 5, 1, game.players.getFirst(), game);
+        addCard("Sword", 10, 2, game.players.getFirst(), game);
+        addCard("Horse", 10, 2, game.players.getFirst(), game);
+        addCard("Battle-Axe", 15, 2, game.players.getFirst(), game);
+        addCard("Lance", 20, 1, game.players.getFirst(), game);
+        System.out.println(game.players.getFirst().printableHand());
+
+        addCard("Foe", 5, 2, game.players.get(1), game);
+        addCard("Foe", 15, 2, game.players.get(1), game);
+        addCard("Foe", 40, 1, game.players.get(1), game);
+        addCard("Dagger", 5, 1, game.players.get(1), game);
+        addCard("Sword", 10, 1, game.players.get(1), game);
+        addCard("Horse", 10, 2, game.players.get(1), game);
+        addCard("Battle-Axe", 15, 2, game.players.get(1), game);
+        addCard("Excalibur", 30, 1, game.players.get(1), game);
+        System.out.println(game.players.get(1).printableHand());
+
+        addCard("Foe", 5, 3, game.players.get(2), game);
+        addCard("Foe", 15, 1, game.players.get(2), game);
+        addCard("Dagger", 5, 1, game.players.get(2), game);
+        addCard("Sword", 10, 3, game.players.get(2), game);
+        addCard("Horse", 10, 2, game.players.get(2), game);
+        addCard("Battle-Axe", 15, 1, game.players.get(2), game);
+        addCard("Lance", 20, 1, game.players.get(2), game);
+        System.out.println(game.players.get(2).printableHand());
+
+        addCard("Foe", 5, 1, game.players.getLast(), game);
+        addCard("Foe", 15, 2, game.players.getLast(), game);
+        addCard("Foe", 40, 1, game.players.getLast(), game);
+        addCard("Dagger", 5, 2, game.players.getLast(), game);
+        addCard("Sword", 10, 1, game.players.getLast(), game);
+        addCard("Horse", 10, 2, game.players.getLast(), game);
+        addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
+        addCard("Lance", 20, 1, game.players.getLast(), game);
+        addCard("Excalibur", 30, 1, game.players.getLast(), game);
+        System.out.println(game.players.getLast().printableHand());
+
+        game.drawEvent(game.players.getFirst());
+
+        game.currCard = new QuestCard("Quest",4, 4);
+        game.currSponsor = game.players.get(1);
+
+
+        game.setupQuest(game.currSponsor, scanner1);
+
+        ArrayList<Player> eligiblePlayers = new ArrayList<>();
+
+        for (int i = 0; i < game.players.size(); i++) {
+            if (game.players.get(i) != game.currSponsor) {
+                eligiblePlayers.add(game.players.get(i));
+            }
+        }
+
+        addCard("Foe", 30, 1, game.players.getFirst(), game);
+        addCard("Sword", 10, 1, game.players.get(2), game);
+        addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
+
+        game.playStage(game.quest.getFirst(), eligiblePlayers, scanner2);
+
+        addCard("Foe", 10, 1, game.players.getFirst(), game);
+        addCard("Lance", 20, 1, game.players.get(2), game);
+        addCard("Lance", 20, 1, game.players.getLast(), game);
+
+        game.playStage(game.quest.get(1), eligiblePlayers, scanner3);
+
+        for (int i = 0; i < game.players.size(); i++) {
+            game.players.get(i).hand.removeLast();
+        }
+
+        assertEquals(0, game.players.getFirst().shields);
+        ArrayList<Card> dummy = new ArrayList<>();
+        dummy.add(new AdventureCard("Foe", 5));
+        dummy.add(new AdventureCard("Foe", 10));
+        dummy.add(new AdventureCard("Foe", 15));
+        dummy.add(new AdventureCard("Foe", 15));
+        dummy.add(new AdventureCard("Foe", 30));
+        dummy.add(new AdventureCard("Horse", 10));
+        dummy.add(new AdventureCard("Battle-Axe", 15));
+        dummy.add(new AdventureCard("Battle-Axe", 15));
+        dummy.add(new AdventureCard("Lance", 20));
+
+//        for (Card c : dummy) {
+//            assertTrue(game.players.getFirst().hand.contains(c));
+//        }
+
+        addCard("Battle-Axe", 15, 1, game.players.get(2), game);
+        addCard("Sword", 10, 1, game.players.getLast(), game);
+
+        game.playStage(game.quest.get(2), eligiblePlayers, scanner4);
+
+        game.players.getLast().hand.removeLast();
+        game.players.get(2).hand.removeLast();
+
+        addCard("Foe", 30, 1, game.players.get(2), game);
+        addCard("Lance", 20, 1, game.players.getLast(), game);
+
+        game.playStage(game.quest.get(3), eligiblePlayers, scanner5);
+        game.players.getLast().hand.removeLast();
+        game.players.get(2).hand.removeLast();
+
+        game.rewardPlayers(eligiblePlayers);
+
+        assertEquals(0, game.players.get(2).shields);
+        assertEquals(4, game.players.getLast().shields);
+
+    }
+
+    void addCard(String cardName, int value, int num, Player player, Game game) {
+        for (int i = 0; i < num; i++) {
+            for (int j = 0; j < game.adventureDeck.size(); j++) {
+                if (cardName.equalsIgnoreCase("Foe") && game.adventureDeck.get(j).getName().equalsIgnoreCase("Foe")) {
+                    if (value == ((AdventureCard) game.adventureDeck.get(j)).value) {
+                        player.hand.add(game.adventureDeck.get(j));
+                        game.adventureDiscard.add(game.adventureDeck.remove(j));
+                        break;
+                    }
+                } else if (game.adventureDeck.get(j).getName().equalsIgnoreCase(cardName)){
+                    player.hand.add(game.adventureDeck.get(j));
+                    game.adventureDiscard.add(game.adventureDeck.remove(j));
+                    break;
+                }
+            }
+        }
     }
 
 }

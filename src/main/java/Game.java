@@ -6,7 +6,7 @@ public class Game {
     private int playerNum;
     public Player currPlayer;
     public Card currCard;
-    private Player currSponsor;
+    public Player currSponsor;
 
     private ArrayList<Card> adventureDeck = new ArrayList<>();
     public ArrayList<Card> eventDeck = new ArrayList<>();
@@ -49,6 +49,18 @@ public class Game {
         }
     }
 
+    public void play() {
+        int round = 0;
+
+        while(true) {
+            playTurn(players.get(round % players.size()));
+            round++;
+            if (endTurn()) {
+                break;
+            }
+        }
+    }
+
     public void playTurn(Player currentPlayer) {
         Scanner playerInput = new Scanner(System.in);
 
@@ -71,8 +83,6 @@ public class Game {
         System.out.println("Press <Return> to end turn.");
         playerInput.nextLine();
 
-        endTurn();
-
     }
 
     public void drawEvent(Player currentPlayer) {
@@ -85,14 +95,16 @@ public class Game {
         currPlayer = currentPlayer;
     }
 
-    public void endTurn() {
+    public boolean endTurn() {
         if (checkWinner()) {
             System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
             System.out.println("WINNERS");
             for (Player winner : winners) {
                 System.out.println(winner);
             }
+            return true;
         }
+        return false;
     }
 
     public void resolveEvent() {
@@ -126,11 +138,11 @@ public class Game {
         System.out.println("# of Players Eligible To Sponsor Quest " + currCard + ": " + eligibleSponsors.size() + "\n");
 
         int currPIndex = players.indexOf(currPlayer);
-        for (int i = currPIndex; i < 4; i++) {
+        for (int i = currPIndex; i < players.size(); i++) {
             printPlayer(players.get(i));
 
             if (eligibleSponsors.contains(players.get(i))) {
-                System.out.println("Would you like to sponsor this quest? (Y/N)\n");
+                System.out.println("Would you like to sponsor this quest? (Y/N)\n" + currCard + "\n");
             } else {
                 System.out.println("You are not eligible to sponsor this quest.\nDouble-press <Return> to continue.\n");
                 playerInput.nextLine();
@@ -146,8 +158,10 @@ public class Game {
 
         if (!sponsored) {
             for (int i = 0; i < currPIndex; i++) {
+                printPlayer(players.get(i));
+
                 if (players.contains(players.get(i))) {
-                    System.out.println("Would you like to sponsor this quest? (Y/N)\n");
+                    System.out.println("Would you like to sponsor this quest? (Y/N)\n" + currCard + "\n");
                 } else {
                     System.out.println("You are not eligible to sponsor this quest.\nDouble-press <Return> to continue.\n");
                     playerInput.nextLine();
@@ -161,6 +175,7 @@ public class Game {
             }
         }
         currSponsor = players.get(sponsor);
+        currSponsor.draw += ((QuestCard) currCard).shields;
         setupQuest(players.get(sponsor), playerInput);
         playQuest(playerInput);
 
@@ -168,13 +183,11 @@ public class Game {
             drawAdventure(p.getId() -1, p.draw);
         }
 
-        currSponsor = null;
 
     }
 
     public void playQuest(Scanner scanner) {
         HashMap<Player,Integer> eligiblePlayers = new HashMap<>();
-        boolean questComplete = false;
 
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i) != currSponsor) {
@@ -187,16 +200,22 @@ public class Game {
             if (!playStage(quest.get(i), eligiblePlayers, scanner)) {
                 break;
             }
-            questComplete = (i == quest.size()-1);
         }
 
-        if (questComplete) {
-            System.out.println("Quest finished successfully!");
-        } else {
-            System.out.println("Quest failed!");
-        }
+        rewardPlayers(eligiblePlayers);
 
         quest.clear();
+        currSponsor = null;
+    }
+
+    public void rewardPlayers(HashMap<Player, Integer> winners) {
+        for (Player p : players) {
+            if (winners.containsKey(p)){
+                System.out.println("Player " + p.getId() + " wins " + ((QuestCard) currCard).shields + " shields!");
+                System.out.println("Player " + p.getId() + " shields: " + p.shields);
+                p.shields += ((QuestCard) currCard).shields;
+            }
+        }
     }
 
     public void setupAttack(Player attacker, ArrayList<Card> stage, Scanner scanner) {
@@ -239,7 +258,6 @@ public class Game {
             cards.add(attacker.hand.get(choice).getName());
             attack.get(attacker.getId()).add(attacker.hand.get(choice));
             adventureDiscard.add(attacker.hand.remove(choice));
-            attacker.draw++;
         }
 
         System.out.println("Attack set.");
@@ -248,7 +266,9 @@ public class Game {
     public boolean playStage(ArrayList<Card> stage, HashMap<Player, Integer> eligiblePlayers, Scanner scanner) {
         ArrayList<Player> removePlayers = new ArrayList<>();
         String playerInput = "";
-        populateEligiblePlayers(stage, eligiblePlayers);
+
+        removePlayers.add(currSponsor);
+        populateEligiblePlayers(stage, removePlayers, eligiblePlayers);
 
         if (eligiblePlayers.isEmpty()) {
             System.out.println("There are no eligible players.");
@@ -287,9 +307,12 @@ public class Game {
 
         resolveAttack(removePlayers, stage);
 
-        for (Player p : removePlayers) {
-            eligiblePlayers.remove(p);
+        for (Player p : eligiblePlayers.keySet()) {
+            if (removePlayers.contains(p)) {
+                eligiblePlayers.remove(p);
+            }
         }
+
 
         return true;
     }
@@ -318,8 +341,7 @@ public class Game {
         }
     }
 
-    public void populateEligiblePlayers(ArrayList<Card> stage, HashMap<Player, Integer> playerPool) {
-        ArrayList<Player> removePlayers = new ArrayList<>();
+    public void populateEligiblePlayers(ArrayList<Card> stage, ArrayList<Player> removePlayers, HashMap<Player, Integer> playerPool) {
 
         for (Player p : playerPool.keySet()) {
             if (!isEligibleForStage(stage, p)) {
@@ -330,6 +352,7 @@ public class Game {
         for (Player p : removePlayers) {
             playerPool.remove(p);
         }
+
     }
 
     public boolean isEligibleForStage(ArrayList<Card> stage, Player player) {
@@ -414,7 +437,7 @@ public class Game {
             return;
         }
 
-        System.out.println("You have " + player.getHandSize() + " cards and must trim " + (player.getHandSize() - 12) + " cards.\n");
+        System.out.println("You have " + player.getHandSize() + " cards and must trim " + ((player.getHandSize() < 12) ? "0" : (player.getHandSize() - 12)) + " cards.\n");
 
         String input;
 
@@ -430,6 +453,8 @@ public class Game {
                 i++;
             }
         }
+
+        System.out.println("Hand after trimming: " + player.printableHand() + "\n");
     }
 
     public void setupQuest(Player player, Scanner scanner) {
@@ -495,16 +520,7 @@ public class Game {
 
             input = "";
 
-            System.out.println("\nQuest:");
-            int stageNum = 1;
-            for (ArrayList<Card> i : quest) {
-                int value = 0;
-                for (Card c : i) {
-                    value += ((AdventureCard) c).value;
-                }
-                System.out.println("Stage #" + stageNum + " Value: " + value + " Cards: " + i);
-                stageNum++;
-            }
+            printQuest();
 
             if (player.hand.isEmpty()) {
                 System.out.println("Player ran out of cards.");
@@ -516,6 +532,11 @@ public class Game {
 
         System.out.println((quest.size() == ((QuestCard) currCard).stages) ? "Valid Quest.\n" : "Invalid Quest.\n");
 
+        printQuest();
+
+    }
+
+    private void printQuest() {
         System.out.println("\nQuest:");
         int stageNum = 1;
         for (ArrayList<Card> i : quest) {
@@ -526,7 +547,6 @@ public class Game {
             System.out.println("Stage #" + stageNum + " Value: " + value + " Cards: " + i);
             stageNum++;
         }
-
     }
 
     private boolean playerQuestResponse(Scanner playerInput) {
@@ -692,15 +712,10 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        Game game = new Game(4);
+        Game game = new Game(2);
         game.initialize();
         game.initializeHands();
 
-        Scanner scanner = new Scanner(System.in);
-
-        game.currPlayer = game.players.getFirst();
-        game.currCard = new QuestCard("Quest", 2, 2);
-
-        game.resolveQuest(scanner);
+        game.play();
     }
 }

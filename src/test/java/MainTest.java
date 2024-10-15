@@ -174,7 +174,7 @@ public class MainTest {
         game.currPlayer = game.players.getFirst();
         game.resolveEvent();
 
-        game.trim(scanner);
+        game.trim(game.currPlayer, scanner);
 
         assertEquals(2, game.getAdventureDiscardSize());
         assertEquals(12, game.players.getFirst().getHandSize());
@@ -195,7 +195,7 @@ public class MainTest {
         game.currPlayer = game.players.getFirst();
         game.resolveEvent();
 
-        game.trim(scanner);
+        game.trim(game.currPlayer, scanner);
 
         assertEquals(0, game.getAdventureDiscardSize());
         assertEquals(12, game.players.getFirst().getHandSize());

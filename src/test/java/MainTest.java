@@ -566,10 +566,9 @@ public class MainTest {
     @Test
     @DisplayName("Check that players are removed from the quest when they fail the stage or are kept when they pass")
     void RESP_12_test_1() {
-        Game game = new Game(4);
+        Game game = new Game(2);
 
         ArrayList<Card> stage = new ArrayList<>();
-        ArrayList<Card> stage2 = new ArrayList<>();
         ArrayList<Player> removePlayers = new ArrayList<>();
 
 
@@ -597,16 +596,49 @@ public class MainTest {
         stage.add(weapon1);
         game.quest.add(stage);
 
-        stage2.add(foe2);
-        stage2.add(weapon2);
-        game.quest.add(stage2);
-
         game.resolveAttack(removePlayers, game.quest.getFirst());
-        game.resolveAttack(removePlayers, game.quest.getLast());
 
         assertEquals(1, removePlayers.size());
         assertEquals(1, removePlayers.getFirst().getId());
 
     }
 
+    @Test
+    @DisplayName("Check that players attack is cleared after resolving")
+    void RESP_12_test_2() {
+        Game game = new Game(2);
+
+        ArrayList<Card> stage = new ArrayList<>();
+        ArrayList<Player> removePlayers = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 2, 2);
+        game.currPlayer = game.players.getFirst();
+
+        for (Player i : game.players) {
+            i.hand.clear();
+        }
+
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card foe2 = new AdventureCard("Foe", 10);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+        Card weapon2 = new AdventureCard("Sword", 10);
+        Card weapon3 = new AdventureCard("Excalibur", 30);
+
+        game.attack.get(1).add(weapon1);
+        game.attack.get(2).add(weapon3);
+
+        stage.add(foe1);
+        stage.add(weapon1);
+        game.quest.add(stage);
+
+        game.resolveAttack(removePlayers, game.quest.getFirst());
+
+        assertTrue(game.attack.get(1).isEmpty());
+        assertTrue(game.attack.get(2).isEmpty());
+    }
 }

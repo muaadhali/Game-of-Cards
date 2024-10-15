@@ -285,10 +285,15 @@ public class Game {
             }
         }
 
+
         for (Player p : removePlayers) {
             eligiblePlayers.remove(p);
         }
         return true;
+    }
+
+    public void resolveAttack(ArrayList<Player> removePlayers, ArrayList<Card> stage) {
+
     }
 
     public void populateEligiblePlayers(ArrayList<Card> stage, HashMap<Player, Integer> playerPool) {

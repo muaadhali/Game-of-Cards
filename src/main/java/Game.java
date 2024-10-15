@@ -78,6 +78,7 @@ public class Game {
         } else {
             resolveEvent();
         }
+
         trim(currentPlayer, playerInput);
 
         System.out.println("Press <Return> to end turn.");
@@ -169,25 +170,28 @@ public class Game {
                 }
 
                 if (playerQuestResponse(playerInput)) {
+                    sponsored = true;
                     sponsor = i;
                     break;
                 }
             }
         }
-        currSponsor = players.get(sponsor);
-        currSponsor.draw += ((QuestCard) currCard).shields;
-        setupQuest(players.get(sponsor), playerInput);
-        playQuest(playerInput);
+        if (sponsored) {
+            currSponsor = players.get(sponsor);
+            currSponsor.draw += ((QuestCard) currCard).shields;
+            setupQuest(players.get(sponsor), playerInput);
+            playQuest(playerInput);
 
-        for (Player p : players) {
-            drawAdventure(p.getId() -1, p.draw);
+            for (Player p : players) {
+                drawAdventure(p.getId() -1, p.draw);
+            }
         }
-
 
     }
 
     public void playQuest(Scanner scanner) {
         ArrayList<Player> eligiblePlayers = new ArrayList<>();
+        ArrayList<Player> removePlayers = new ArrayList<>();
 
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i) != currSponsor) {
@@ -196,10 +200,12 @@ public class Game {
         }
 
         for (int i = 0; i < quest.size(); i++) {
-            System.out.println("Playing Stage #" + (i+1) + "...");
-            if (!playStage(quest.get(i), eligiblePlayers, scanner)) {
+            System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
+            System.out.println("Playing Stage #" + (i+1) + "...\n");
+            if (!playStage(quest.get(i), eligiblePlayers, removePlayers, scanner)) {
                 break;
             }
+            System.out.println("\nStage " + (i+1) + " complete.");
         }
 
         rewardPlayers(eligiblePlayers);
@@ -213,7 +219,7 @@ public class Game {
             if (winners.contains(p)){
                 System.out.println("Player " + p.getId() + " wins " + ((QuestCard) currCard).shields + " shields!");
                 winners.get(winners.indexOf(p)).shields += ((QuestCard) currCard).shields;
-                System.out.println("Player " + p.getId() + " shields: " + p.shields);
+                System.out.println("Player " + p.getId() + " shields: " + p.shields + "\n");
             }
         }
     }
@@ -249,6 +255,11 @@ public class Game {
 
             int choice = Integer.parseInt(playerInput)-1;
 
+            if (attacker.hand.get(choice).getName().equalsIgnoreCase("Foe")) {
+                System.out.println("Cannot add a foe to your attack.");
+                continue;
+            }
+
             if (cards.contains(attacker.hand.get(choice).getName())){
                 System.out.println("Cannot repeat cards in your attack.");
                 continue;
@@ -260,11 +271,10 @@ public class Game {
             adventureDiscard.add(attacker.hand.remove(choice));
         }
 
-        System.out.println("Attack set.");
+        System.out.println("Attack set.\n");
     }
 
-    public boolean playStage(ArrayList<Card> stage, ArrayList<Player> eligiblePlayers, Scanner scanner) {
-        ArrayList<Player> removePlayers = new ArrayList<>();
+    public boolean playStage(ArrayList<Card> stage, ArrayList<Player> eligiblePlayers, ArrayList<Player> removePlayers, Scanner scanner) {
         String playerInput = "";
 
         removePlayers.add(currSponsor);
@@ -311,7 +321,6 @@ public class Game {
             eligiblePlayers.remove(p);
         }
 
-
         return true;
     }
 
@@ -329,12 +338,15 @@ public class Game {
                 }
 
                 if (stageVal > attackVal) {
+                    System.out.println("Player " + id + " failed the attack!");
                     removePlayers.add(players.get(id-1));
                 } else {
+                    System.out.println("Player " + id + " succeeded the attack!");
                 }
             }
             attack.get(id).clear();
         }
+        System.out.println("\n");
     }
 
     public void populateEligiblePlayers(ArrayList<Card> stage, ArrayList<Player> removePlayers, ArrayList<Player> playerPool) {
@@ -433,24 +445,25 @@ public class Game {
             return;
         }
 
+        printPlayer(player);
         System.out.println("You have " + player.getHandSize() + " cards and must trim " + ((player.getHandSize() < 12) ? "0" : (player.getHandSize() - 12)) + " cards.\n");
 
         String input;
 
         for (int i = player.getHandSize(); i > 12; i--) {
-            System.out.println("Current hand: " + player.printableHand());
             System.out.println("Pick a card to trim by entering a number between 1-" + player.getHandSize() + ": ");
             input = playerInput.nextLine().replaceAll("\\s+","");
             if (checkValid(input, player)) {
                 int discNum = Integer.parseInt(input) - 1;
                 System.out.println("\nYou chose " + (discNum + 1) + ". " + player.hand.get(discNum) + "\n");
                 adventureDiscard.add(player.hand.remove(discNum));
+                System.out.println("Current hand: " + player.printableHand());
             } else {
                 i++;
             }
         }
 
-        System.out.println("Hand after trimming: " + player.printableHand() + "\n");
+        System.out.println("Hand after completed trimming: " + player.printableHand() + "\n");
     }
 
     public void setupQuest(Player player, Scanner scanner) {
@@ -461,7 +474,7 @@ public class Game {
             ArrayList<Card> stage = new ArrayList<>();
             boolean foeAdded = false;
 
-            System.out.println("\n**Building Stage " + (j+1) + "...");
+            System.out.println("\nBuilding Stage " + (j+1) + "...");
 
             while (!player.hand.isEmpty() && !input.equalsIgnoreCase("quit")) {
                 System.out.println("Pick a card from 1-" + player.getHandSize() + ". Type <quit> to confirm stage.");
@@ -582,7 +595,7 @@ public class Game {
         }
     }
 
-    private void drawAdventure(int index, int num) {
+    public void drawAdventure(int index, int num) {
         Random rand = new Random();
 
         for (int j = 0; j < num; j++) {

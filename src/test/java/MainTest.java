@@ -708,7 +708,7 @@ public class MainTest {
         Mockito.when(scanner2.nextLine()).thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("4").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("7").thenReturn("quit");
         Mockito.when(scanner3.nextLine()).thenReturn("yes").thenReturn("5").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("8").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("6").thenReturn("6").thenReturn("quit");
         Mockito.when(scanner4.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("6").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("8").thenReturn("5").thenReturn("5").thenReturn("quit");
-        Mockito.when(scanner5.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("4").thenReturn("5").thenReturn("quit").thenReturn("yes").thenReturn("4").thenReturn("7").thenReturn("5").thenReturn("4").thenReturn("quit");
+        Mockito.when(scanner5.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("4").thenReturn("5").thenReturn("quit").thenReturn("yes").thenReturn("4").thenReturn("6").thenReturn("5").thenReturn("4").thenReturn("quit");
         game.initialize();
         game.initializeHands();
 
@@ -767,6 +767,7 @@ public class MainTest {
         game.setupQuest(game.currSponsor, scanner1);
 
         ArrayList<Player> eligiblePlayers = new ArrayList<>();
+        ArrayList<Player> removePlayers = new ArrayList<>();
 
         for (int i = 0; i < game.players.size(); i++) {
             if (game.players.get(i) != game.currSponsor) {
@@ -778,13 +779,13 @@ public class MainTest {
         addCard("Sword", 10, 1, game.players.get(2), game);
         addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
 
-        game.playStage(game.quest.getFirst(), eligiblePlayers, scanner2);
+        game.playStage(game.quest.getFirst(), eligiblePlayers, removePlayers, scanner2);
 
         addCard("Foe", 10, 1, game.players.getFirst(), game);
         addCard("Lance", 20, 1, game.players.get(2), game);
         addCard("Lance", 20, 1, game.players.getLast(), game);
 
-        game.playStage(game.quest.get(1), eligiblePlayers, scanner3);
+        game.playStage(game.quest.get(1), eligiblePlayers, removePlayers, scanner3);
 
         for (int i = 0; i < game.players.size(); i++) {
             game.players.get(i).hand.removeLast();
@@ -802,14 +803,27 @@ public class MainTest {
         dummy.add(new AdventureCard("Battle-Axe", 15));
         dummy.add(new AdventureCard("Lance", 20));
 
-//        for (Card c : dummy) {
-//            assertTrue(game.players.getFirst().hand.contains(c));
-//        }
+        System.out.println("\nPlayer 1's hand:");
+        for (Card c : dummy) {
+            boolean contains = false;
+            for (Card c2 : game.players.getFirst().hand) {
+                if ((c.getName().equals(c2.getName()) && ((AdventureCard) c).value == ((AdventureCard) c2).value)) {
+                    contains = true;
+                    System.out.println(c2);
+                    game.players.getFirst().hand.remove(c2);
+                    break;
+                }
+            }
+            assertTrue(contains);
+        }
+        System.out.println("\n");
+
+        eligiblePlayers.remove(game.players.getFirst());
 
         addCard("Battle-Axe", 15, 1, game.players.get(2), game);
         addCard("Sword", 10, 1, game.players.getLast(), game);
 
-        game.playStage(game.quest.get(2), eligiblePlayers, scanner4);
+        game.playStage(game.quest.get(2), eligiblePlayers, removePlayers, scanner4);
 
         game.players.getLast().hand.removeLast();
         game.players.get(2).hand.removeLast();
@@ -817,14 +831,61 @@ public class MainTest {
         addCard("Foe", 30, 1, game.players.get(2), game);
         addCard("Lance", 20, 1, game.players.getLast(), game);
 
-        game.playStage(game.quest.get(3), eligiblePlayers, scanner5);
+        game.playStage(game.quest.get(3), eligiblePlayers, removePlayers, scanner5);
         game.players.getLast().hand.removeLast();
         game.players.get(2).hand.removeLast();
 
+        eligiblePlayers.remove(game.players.get(2));
         game.rewardPlayers(eligiblePlayers);
 
+        dummy.clear();
+        dummy.add(new AdventureCard("Foe", 5));
+        dummy.add(new AdventureCard("Foe", 5));
+        dummy.add(new AdventureCard("Foe", 15));
+        dummy.add(new AdventureCard("Foe", 30));
+        dummy.add(new AdventureCard("Sword", 10));
+
+        System.out.println("\nPlayer 3's hand:");
+        for (Card c : dummy) {
+            boolean contains = false;
+            for (Card c2 : game.players.get(2).hand) {
+                if ((c.getName().equals(c2.getName()) && ((AdventureCard) c).value == ((AdventureCard) c2).value)) {
+                    contains = true;
+                    System.out.println(c2);
+                    game.players.get(2).hand.remove(c2);
+                    break;
+                }
+            }
+            assertTrue(contains);
+        }
+        System.out.println("\n");
+
         assertEquals(0, game.players.get(2).shields);
+
+        dummy.clear();
+        dummy.add(new AdventureCard("Foe", 15));
+        dummy.add(new AdventureCard("Foe", 15));
+        dummy.add(new AdventureCard("Foe", 40));
+        dummy.add(new AdventureCard("Lance", 20));
+
+        System.out.println("\nPlayer 4's hand:");
+        for (Card c : dummy) {
+            boolean contains = false;
+            for (Card c2 : game.players.getLast().hand) {
+                if ((c.getName().equals(c2.getName()) && ((AdventureCard) c).value == ((AdventureCard) c2).value)) {
+                    contains = true;
+                    System.out.println(c2);
+                    game.players.getLast().hand.remove(c2);
+                    break;
+                }
+            }
+            assertTrue(contains);
+        }
+        System.out.println("\n");
+
         assertEquals(4, game.players.getLast().shields);
+
+        game.drawAdventure(4, game.players.getLast().draw);
 
     }
 

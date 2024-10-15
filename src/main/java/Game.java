@@ -307,10 +307,8 @@ public class Game {
 
         resolveAttack(removePlayers, stage);
 
-        for (Player p : eligiblePlayers.keySet()) {
-            if (removePlayers.contains(p)) {
-                eligiblePlayers.remove(p);
-            }
+        for (Player p : removePlayers) {
+            eligiblePlayers.remove(p);
         }
 
 

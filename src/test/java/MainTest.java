@@ -496,7 +496,7 @@ public class MainTest {
 //------------------------- RESP-10 ------------------------------------------//
 
     @Test
-    @DisplayName("Check player draws same number of cards used in setting up quest")
+    @DisplayName("Check player draws same number of cards used in setting up quest plush the number of quest stages")
     void RESP_10_test_1() {
         Game game = new Game(4);
         Scanner scanner = Mockito.mock(Scanner.class);
@@ -507,6 +507,7 @@ public class MainTest {
 
         game.currCard = new QuestCard("Quest", 1, 1);
         game.currPlayer = game.players.getFirst();
+        game.currSponsor = game.players.getFirst();
 
         game.players.getFirst().hand.clear();
 
@@ -519,7 +520,7 @@ public class MainTest {
 
         game.resolveQuest(scanner);
 
-        assertEquals(2, game.players.getFirst().getHandSize());
+        assertEquals(3, game.players.getFirst().getHandSize());
     }
 
 //------------------------- RESP-11 ------------------------------------------//
@@ -687,6 +688,15 @@ public class MainTest {
 
         assertEquals(1, game.players.getLast().shields);
         assertEquals(0, game.players.getFirst().shields);
+    }
+
+//------------------------- Mandatory A-TEST ------------------------------------------//
+
+    @Test
+    @DisplayName("A-TEST JP-Scenario")
+    void A_TEST_JP_SCENARIO() {
+        Game game = new Game(4);
+
     }
 
 }

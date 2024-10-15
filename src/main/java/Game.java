@@ -329,10 +329,8 @@ public class Game {
                 }
 
                 if (stageVal > attackVal) {
-                    System.out.println("Player " + id + " failed their attack!");
                     removePlayers.add(players.get(id-1));
                 } else {
-                    System.out.println("Player " + id + " succeeded in their attack!");
                 }
             }
             attack.get(id).clear();

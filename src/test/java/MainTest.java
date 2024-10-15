@@ -788,7 +788,7 @@ public class MainTest {
         game.playStage(game.quest.get(1), eligiblePlayers, removePlayers, scanner3);
 
         for (int i = 0; i < game.players.size(); i++) {
-            game.players.get(i).hand.removeLast();
+            game.adventureDeck.add(game.players.get(i).hand.removeLast());
         }
 
         assertEquals(0, game.players.getFirst().shields);
@@ -825,15 +825,15 @@ public class MainTest {
 
         game.playStage(game.quest.get(2), eligiblePlayers, removePlayers, scanner4);
 
-        game.players.getLast().hand.removeLast();
-        game.players.get(2).hand.removeLast();
+        game.adventureDeck.add(game.players.getLast().hand.removeLast());
+        game.adventureDeck.add(game.players.get(2).hand.removeLast());
 
         addCard("Foe", 30, 1, game.players.get(2), game);
         addCard("Lance", 20, 1, game.players.getLast(), game);
 
         game.playStage(game.quest.get(3), eligiblePlayers, removePlayers, scanner5);
-        game.players.getLast().hand.removeLast();
-        game.players.get(2).hand.removeLast();
+        game.adventureDeck.add(game.players.getLast().hand.removeLast());
+        game.adventureDeck.add(game.players.get(2).hand.removeLast());
 
         eligiblePlayers.remove(game.players.get(2));
         game.rewardPlayers(eligiblePlayers);

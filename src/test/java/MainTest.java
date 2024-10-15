@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -641,4 +642,51 @@ public class MainTest {
         assertTrue(game.attack.get(1).isEmpty());
         assertTrue(game.attack.get(2).isEmpty());
     }
+
+//------------------------- RESP-12 ------------------------------------------//
+
+    @Test
+    @DisplayName("Check that players are awarded correctly after quest finishes")
+    void RESP_13_test_1() {
+        Game game = new Game(3);
+        Scanner scanner = Mockito.mock(Scanner.class);
+        Mockito.when(scanner.nextLine()).thenReturn("y").thenReturn("1").thenReturn("2").thenReturn("quit").thenReturn("y").thenReturn("1").thenReturn("quit");
+
+        ArrayList<Card> stage = new ArrayList<>();
+
+
+        game.initialize();
+        game.initializeHands();
+
+        game.currCard = new QuestCard("Quest", 1, 1);
+        game.currPlayer = game.players.get(1);
+        game.currSponsor = game.players.get(1);
+
+        for (Player i : game.players) {
+            i.hand.clear();
+        }
+
+
+        Card foe1 = new AdventureCard("Foe", 5);
+        Card weapon1 = new AdventureCard("Dagger", 5);
+        Card weapon2 = new AdventureCard("Sword", 10);
+        Card weapon3 = new AdventureCard("Excalibur", 30);
+
+        game.players.getFirst().hand.add(weapon1);
+        game.players.getFirst().hand.add(weapon2);
+        game.players.getFirst().hand.add(weapon3);
+        game.players.getLast().hand.add(weapon1);
+        game.players.getLast().hand.add(weapon2);
+        game.players.getLast().hand.add(weapon3);
+
+        stage.add(foe1);
+        stage.add(weapon1);
+        game.quest.add(stage);
+
+        game.playQuest(scanner);
+
+        assertEquals(1, game.players.getLast().shields);
+        assertEquals(0, game.players.getFirst().shields);
+    }
+
 }

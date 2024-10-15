@@ -688,8 +688,8 @@ public class MainTest {
 
         game.playQuest(scanner);
 
-        assertEquals(1, game.players.getLast().shields);
-        assertEquals(0, game.players.getFirst().shields);
+        assertEquals(1, game.players.getFirst().shields);
+        assertEquals(0, game.players.getLast().shields);
     }
 
 //------------------------- Mandatory A-TEST ------------------------------------------//

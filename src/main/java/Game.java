@@ -40,6 +40,7 @@ public class Game {
         for (int i = 0; i < playerNum; i++) {
             Player player = new Player(i+1);
             players.add(player);
+            attack.put(player.getId(), new ArrayList<>());
         }
 
         for (int i = 0; i < players.size(); i++) {
@@ -65,7 +66,7 @@ public class Game {
         } else {
             resolveEvent();
         }
-        trim(playerInput);
+        trim(currentPlayer, playerInput);
 
         System.out.println("Press <Return> to end turn.");
         playerInput.nextLine();
@@ -164,14 +165,7 @@ public class Game {
         playQuest(playerInput);
 
         for (Player p : players) {
-            System.out.println(p);
-        }
-        for (Player p : players) {
             drawAdventure(p.getId() -1, p.draw);
-        }
-
-        for (Player p : players) {
-            System.out.println(p);
         }
 
         currSponsor = null;
@@ -206,7 +200,49 @@ public class Game {
     }
 
     public void setupAttack(Player attacker, ArrayList<Card> stage, Scanner scanner) {
+        int attackVal = 0;
+        ArrayList<String> cards = new ArrayList<>();
+        String playerInput;
 
+        System.out.println("Set up your Attack.\n");
+
+        while(true) {
+            System.out.println("Attack So Far:\nValue: " + attackVal + " Cards: " + attack.get(attacker.getId()));
+            System.out.println("Current Hand: " + attacker.printableHand());
+
+            if (attacker.hand.isEmpty()) {
+                System.out.println("Ran out of cards.");
+                break;
+            }
+
+            System.out.println("\nPick a card from 1-" + (attacker.getHandSize()) + ". Type <quit> to confirm attack.");
+
+            playerInput = scanner.nextLine().replaceAll("\\s", "");
+
+            if (playerInput.equalsIgnoreCase("quit")) {
+                break;
+            }
+
+            if (!checkValid(playerInput, attacker)) {
+                System.out.println("Invalid input, try again.");
+                continue;
+            }
+
+            int choice = Integer.parseInt(playerInput)-1;
+
+            if (cards.contains(attacker.hand.get(choice).getName())){
+                System.out.println("Cannot repeat cards in your attack.");
+                continue;
+            }
+
+            attackVal += ((AdventureCard) attacker.hand.get(choice)).value;
+            cards.add(attacker.hand.get(choice).getName());
+            attack.get(attacker.getId()).add(attacker.hand.get(choice));
+            adventureDiscard.add(attacker.hand.remove(choice));
+            attacker.draw++;
+        }
+
+        System.out.println("Attack set.");
     }
 
     public boolean playStage(ArrayList<Card> stage, HashMap<Player, Integer> eligiblePlayers, Scanner scanner) {
@@ -233,7 +269,11 @@ public class Game {
                 playerInput = scanner.nextLine().replaceAll("\\s", "");
 
                 if (playerInput.equalsIgnoreCase("yes") || playerInput.equalsIgnoreCase("y")) {
-                    System.out.println("Good luck setting up your attack.");
+                    System.out.println("Drawing for stage.");
+                    p.draw++;
+                    drawAdventure(p.getId()-1, 1);
+                    trim(p, scanner);
+                    setupAttack(p, stage, scanner);
                     break;
                 } else if (playerInput.equalsIgnoreCase("no") || playerInput.equalsIgnoreCase("n")) {
                     System.out.println("Coward!!");
@@ -341,24 +381,24 @@ public class Game {
         return eligibleSponsors;
     }
 
-    public void trim(Scanner playerInput) {
+    public void trim(Player player, Scanner playerInput) {
 
-        if (currPlayer.getHandSize() == 12) {
+        if (player.getHandSize() == 12) {
             return;
         }
 
-        System.out.println("You have " + currPlayer.getHandSize() + " cards and must trim " + (currPlayer.getHandSize() - 12) + " cards.\n");
+        System.out.println("You have " + player.getHandSize() + " cards and must trim " + (player.getHandSize() - 12) + " cards.\n");
 
         String input;
 
-        for (int i = currPlayer.getHandSize(); i > 12; i--) {
-            System.out.println("Current hand: " + currPlayer.printableHand());
-            System.out.println("Pick a card to trim by entering a number between 1-" + currPlayer.getHandSize() + ": ");
+        for (int i = player.getHandSize(); i > 12; i--) {
+            System.out.println("Current hand: " + player.printableHand());
+            System.out.println("Pick a card to trim by entering a number between 1-" + player.getHandSize() + ": ");
             input = playerInput.nextLine().replaceAll("\\s+","");
-            if (checkValid(input)) {
-                int discNum = Integer.valueOf(input) - 1;
-                System.out.println("\nYou chose " + (discNum + 1) + ". " + currPlayer.hand.get(discNum) + "\n");
-                adventureDiscard.add(currPlayer.hand.remove(discNum));
+            if (checkValid(input, player)) {
+                int discNum = Integer.parseInt(input) - 1;
+                System.out.println("\nYou chose " + (discNum + 1) + ". " + player.hand.get(discNum) + "\n");
+                adventureDiscard.add(player.hand.remove(discNum));
             } else {
                 i++;
             }
@@ -376,12 +416,12 @@ public class Game {
             System.out.println("\n**Building Stage " + (j+1) + "...");
 
             while (!player.hand.isEmpty() && !input.equalsIgnoreCase("quit")) {
-                System.out.println("Pick a card from 1-" + player.getHandSize() + ".");
+                System.out.println("Pick a card from 1-" + player.getHandSize() + ". Type <quit> to confirm stage.");
                 System.out.println("Hand: " + player.printableHand());
 
                 input = scanner.nextLine().replaceAll("\\s", "");
 
-                while (!input.equalsIgnoreCase("quit") && !checkValid(input)) {
+                while (!input.equalsIgnoreCase("quit") && !checkValid(input, player)) {
                     input = scanner.nextLine().replaceAll("\\s", "");
                 }
 
@@ -485,9 +525,9 @@ public class Game {
         System.out.println("CURRENT PLAYER\n" + thisPlayer + "\n");
     }
 
-    private boolean checkValid(String input) {
+    private boolean checkValid(String input, Player player) {
         try {
-            if (Integer.valueOf(input) < 1 || Integer.valueOf(input) > currPlayer.getHandSize()) {
+            if (Integer.parseInt(input) < 1 || Integer.parseInt(input) > player.getHandSize()) {
                 System.out.println("\nInvalid Input.\n");
                 return false;
             } else {
@@ -501,8 +541,6 @@ public class Game {
 
     private void drawAdventure(int index, int num) {
         Random rand = new Random();
-
-        System.out.println("in draw");
 
         for (int j = 0; j < num; j++) {
             if (getAdventureDiscardSize() == 0) {

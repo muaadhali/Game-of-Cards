@@ -46,6 +46,7 @@ public class Game {
         for (int i = 0; i < players.size(); i++) {
             players.get(i).draw = 12;
             drawAdventure(i, players.get(i).draw);
+            sortHand(i);
         }
     }
 
@@ -80,6 +81,7 @@ public class Game {
         }
 
         trim(currentPlayer, playerInput);
+        sortHand(currentPlayer.getId()-1);
 
         System.out.println("Press <Return> to end turn.");
         playerInput.nextLine();
@@ -232,7 +234,7 @@ public class Game {
         System.out.println("Set up your Attack.\n");
 
         while(true) {
-            System.out.println("Attack So Far:\nValue: " + attackVal + " Cards: " + attack.get(attacker.getId()));
+            System.out.println("Attack So Far:\nValue: " + attackVal + ", Cards: " + attack.get(attacker.getId()));
             System.out.println("Current Hand: " + attacker.printableHand());
 
             if (attacker.hand.isEmpty()) {
@@ -300,6 +302,7 @@ public class Game {
 
                 if (playerInput.equalsIgnoreCase("yes") || playerInput.equalsIgnoreCase("y")) {
                     System.out.println("Drawing for stage.");
+                    sortHand(p.getId()-1);
                     p.draw++;
                     drawAdventure(p.getId()-1, 1);
                     trim(p, scanner);
@@ -524,7 +527,7 @@ public class Game {
                 for (Card c : stage) {
                     value += ((AdventureCard) c).value;
                 }
-                System.out.println(" Value: " + value + " Cards: " + stage);
+                System.out.println(" Value: " + value + ", Cards: " + stage);
             }
 
             input = "";
@@ -553,7 +556,7 @@ public class Game {
             for (Card c : i) {
                 value += ((AdventureCard) c).value;
             }
-            System.out.println("Stage #" + stageNum + " Value: " + value + " Cards: " + i);
+            System.out.println("Stage #" + stageNum + " Value: " + value + ", Cards: " + i);
             stageNum++;
         }
     }
@@ -572,6 +575,24 @@ public class Game {
                 return false;
             } else {
                 System.out.println("Invalid Input. Try Again: \n");
+            }
+        }
+    }
+
+    public void addCard(String cardName, int value, int num, Player player, Game game) {
+        for (int i = 0; i < num; i++) {
+            for (int j = 0; j < game.adventureDeck.size(); j++) {
+                if (cardName.equalsIgnoreCase("Foe") && game.adventureDeck.get(j).getName().equalsIgnoreCase("Foe")) {
+                    if (value == ((AdventureCard) game.adventureDeck.get(j)).value) {
+                        player.hand.add(game.adventureDeck.get(j));
+                        game.adventureDiscard.add(game.adventureDeck.remove(j));
+                        break;
+                    }
+                } else if (game.adventureDeck.get(j).getName().equalsIgnoreCase(cardName)){
+                    player.hand.add(game.adventureDeck.get(j));
+                    game.adventureDiscard.add(game.adventureDeck.remove(j));
+                    break;
+                }
             }
         }
     }
@@ -605,6 +626,57 @@ public class Game {
             int nextCard = rand.nextInt(getAdventureDeckSize());
             players.get(index).hand.add(adventureDeck.remove(nextCard));
             players.get(index).draw--;
+        }
+
+    }
+
+    public void sortHand(int index) {
+        ArrayList<Card> temp = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+
+        int min = 100;
+        int indexMin = 0;
+        boolean foes = true;
+
+        names.add("Dagger");
+        names.add("Sword");
+        names.add("Horse");
+        names.add("Battle-Axe");
+        names.add("Lance");
+        names.add("Excalibur");
+
+        while(players.get(index).getHandSize() > 0) {
+            while (foes) {
+                for (int i = 0; i < players.get(index).getHandSize(); i++) {
+                    if (((AdventureCard) players.get(index).hand.get(i)).value < min && players.get(index).hand.get(i).getName().equalsIgnoreCase("foe")) {
+                        indexMin = i;
+                        min = ((AdventureCard) players.get(index).hand.get(i)).value;
+                    }
+                }
+
+                temp.add(players.get(index).hand.remove(indexMin));
+                min = 100;
+                foes = false;
+                for (Card c : players.get(index).hand) {
+                    if (c.getName().equalsIgnoreCase("foe")) {
+                        foes = true;
+                    }
+                }
+            }
+
+            for (String name : names) {
+                for (int i = 0; i < players.get(index).getHandSize(); i++) {
+                    if (players.get(index).hand.get(i).getName().equalsIgnoreCase(name)) {
+                        temp.add(players.get(index).hand.remove(i));
+                        i--;
+                    }
+                }
+            }
+
+        }
+
+        for (Card c : temp) {
+            players.get(index).hand.add(c);
         }
     }
 
@@ -725,6 +797,8 @@ public class Game {
         game.initialize();
         game.initializeHands();
 
-        game.play();
+        for (Player p : game.players) {
+            System.out.println(p.printableHand());
+        }
     }
 }

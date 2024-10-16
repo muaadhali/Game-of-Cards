@@ -697,18 +697,22 @@ public class MainTest {
     @Test
     @DisplayName("A-TEST JP-Scenario")
     void A_TEST_JP_SCENARIO() {
+
         Game game = new Game(4);
         Scanner scanner1 = Mockito.mock(Scanner.class);
         Scanner scanner2 = Mockito.mock(Scanner.class);
         Scanner scanner3 = Mockito.mock(Scanner.class);
         Scanner scanner4 = Mockito.mock(Scanner.class);
         Scanner scanner5 = Mockito.mock(Scanner.class);
+        Scanner scanner6 = Mockito.mock(Scanner.class);
 
         Mockito.when(scanner1.nextLine()).thenReturn("1").thenReturn("7").thenReturn("quit").thenReturn("2").thenReturn("5").thenReturn("quit").thenReturn("2").thenReturn("3").thenReturn("4").thenReturn("quit").thenReturn("2").thenReturn("3").thenReturn("quit");
-        Mockito.when(scanner2.nextLine()).thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("4").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("7").thenReturn("quit");
-        Mockito.when(scanner3.nextLine()).thenReturn("yes").thenReturn("5").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("8").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("6").thenReturn("6").thenReturn("quit");
-        Mockito.when(scanner4.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("6").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("8").thenReturn("5").thenReturn("5").thenReturn("quit");
-        Mockito.when(scanner5.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("4").thenReturn("5").thenReturn("quit").thenReturn("yes").thenReturn("4").thenReturn("6").thenReturn("5").thenReturn("4").thenReturn("quit");
+        Mockito.when(scanner2.nextLine()).thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("5").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("7").thenReturn("quit");
+        Mockito.when(scanner3.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("6").thenReturn("quit").thenReturn("yes").thenReturn("9").thenReturn("6").thenReturn("quit").thenReturn("yes").thenReturn("6").thenReturn("6").thenReturn("quit");
+        Mockito.when(scanner4.nextLine()).thenReturn("yes").thenReturn("10").thenReturn("7").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("7").thenReturn("5").thenReturn("7").thenReturn("quit");
+        Mockito.when(scanner5.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("6").thenReturn("6").thenReturn("quit").thenReturn("yes").thenReturn("4").thenReturn("4").thenReturn("5").thenReturn("5").thenReturn("quit");
+        Mockito.when(scanner6.nextLine()).thenReturn("1").thenReturn("1").thenReturn("1").thenReturn("1");
+
         game.initialize();
         game.initializeHands();
 
@@ -719,43 +723,43 @@ public class MainTest {
             game.adventureDeck.add(game.players.get(3).hand.removeFirst());
         }
 
-        addCard("Foe", 5, 2, game.players.getFirst(), game);
-        addCard("Foe", 15, 2, game.players.getFirst(), game);
-        addCard("Dagger", 5, 1, game.players.getFirst(), game);
-        addCard("Sword", 10, 2, game.players.getFirst(), game);
-        addCard("Horse", 10, 2, game.players.getFirst(), game);
-        addCard("Battle-Axe", 15, 2, game.players.getFirst(), game);
-        addCard("Lance", 20, 1, game.players.getFirst(), game);
+        game.addCard("Foe", 5, 2, game.players.getFirst(), game);
+        game.addCard("Foe", 15, 2, game.players.getFirst(), game);
+        game.addCard("Dagger", 5, 1, game.players.getFirst(), game);
+        game.addCard("Sword", 10, 2, game.players.getFirst(), game);
+        game.addCard("Horse", 10, 2, game.players.getFirst(), game);
+        game.addCard("Battle-Axe", 15, 2, game.players.getFirst(), game);
+        game.addCard("Lance", 20, 1, game.players.getFirst(), game);
         System.out.println(game.players.getFirst().printableHand());
 
-        addCard("Foe", 5, 2, game.players.get(1), game);
-        addCard("Foe", 15, 2, game.players.get(1), game);
-        addCard("Foe", 40, 1, game.players.get(1), game);
-        addCard("Dagger", 5, 1, game.players.get(1), game);
-        addCard("Sword", 10, 1, game.players.get(1), game);
-        addCard("Horse", 10, 2, game.players.get(1), game);
-        addCard("Battle-Axe", 15, 2, game.players.get(1), game);
-        addCard("Excalibur", 30, 1, game.players.get(1), game);
+        game.addCard("Foe", 5, 2, game.players.get(1), game);
+        game.addCard("Foe", 15, 2, game.players.get(1), game);
+        game.addCard("Foe", 40, 1, game.players.get(1), game);
+        game.addCard("Dagger", 5, 1, game.players.get(1), game);
+        game.addCard("Sword", 10, 1, game.players.get(1), game);
+        game.addCard("Horse", 10, 2, game.players.get(1), game);
+        game.addCard("Battle-Axe", 15, 2, game.players.get(1), game);
+        game.addCard("Excalibur", 30, 1, game.players.get(1), game);
         System.out.println(game.players.get(1).printableHand());
 
-        addCard("Foe", 5, 3, game.players.get(2), game);
-        addCard("Foe", 15, 1, game.players.get(2), game);
-        addCard("Dagger", 5, 1, game.players.get(2), game);
-        addCard("Sword", 10, 3, game.players.get(2), game);
-        addCard("Horse", 10, 2, game.players.get(2), game);
-        addCard("Battle-Axe", 15, 1, game.players.get(2), game);
-        addCard("Lance", 20, 1, game.players.get(2), game);
+        game.addCard("Foe", 5, 3, game.players.get(2), game);
+        game.addCard("Foe", 15, 1, game.players.get(2), game);
+        game.addCard("Dagger", 5, 1, game.players.get(2), game);
+        game.addCard("Sword", 10, 3, game.players.get(2), game);
+        game.addCard("Horse", 10, 2, game.players.get(2), game);
+        game.addCard("Battle-Axe", 15, 1, game.players.get(2), game);
+        game.addCard("Lance", 20, 1, game.players.get(2), game);
         System.out.println(game.players.get(2).printableHand());
 
-        addCard("Foe", 5, 1, game.players.getLast(), game);
-        addCard("Foe", 15, 2, game.players.getLast(), game);
-        addCard("Foe", 40, 1, game.players.getLast(), game);
-        addCard("Dagger", 5, 2, game.players.getLast(), game);
-        addCard("Sword", 10, 1, game.players.getLast(), game);
-        addCard("Horse", 10, 2, game.players.getLast(), game);
-        addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
-        addCard("Lance", 20, 1, game.players.getLast(), game);
-        addCard("Excalibur", 30, 1, game.players.getLast(), game);
+        game.addCard("Foe", 5, 1, game.players.getLast(), game);
+        game.addCard("Foe", 15, 2, game.players.getLast(), game);
+        game.addCard("Foe", 40, 1, game.players.getLast(), game);
+        game.addCard("Dagger", 5, 2, game.players.getLast(), game);
+        game.addCard("Sword", 10, 1, game.players.getLast(), game);
+        game.addCard("Horse", 10, 2, game.players.getLast(), game);
+        game.addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
+        game.addCard("Lance", 20, 1, game.players.getLast(), game);
+        game.addCard("Excalibur", 30, 1, game.players.getLast(), game);
         System.out.println(game.players.getLast().printableHand());
 
         game.drawEvent(game.players.getFirst());
@@ -775,20 +779,30 @@ public class MainTest {
             }
         }
 
-        addCard("Foe", 30, 1, game.players.getFirst(), game);
-        addCard("Sword", 10, 1, game.players.get(2), game);
-        addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
+        game.addCard("Foe", 30, 1, game.players.getFirst(), game);
+        game.addCard("Sword", 10, 1, game.players.get(2), game);
+        game.addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
+
+        game.sortHand(0);
+        game.sortHand(2);
+        game.sortHand(3);
 
         game.playStage(game.quest.getFirst(), eligiblePlayers, removePlayers, scanner2);
 
-        addCard("Foe", 10, 1, game.players.getFirst(), game);
-        addCard("Lance", 20, 1, game.players.get(2), game);
-        addCard("Lance", 20, 1, game.players.getLast(), game);
+        game.addCard("Foe", 10, 1, game.players.getFirst(), game);
+        game.addCard("Lance", 20, 1, game.players.get(2), game);
+        game.addCard("Lance", 20, 1, game.players.getLast(), game);
+
+        game.sortHand(0);
+        game.sortHand(2);
+        game.sortHand(3);
 
         game.playStage(game.quest.get(1), eligiblePlayers, removePlayers, scanner3);
 
         for (int i = 0; i < game.players.size(); i++) {
-            game.adventureDeck.add(game.players.get(i).hand.removeLast());
+            if (i != 1) {
+                game.adventureDeck.add(game.players.get(i).hand.removeLast());
+            }
         }
 
         assertEquals(0, game.players.getFirst().shields);
@@ -803,39 +817,38 @@ public class MainTest {
         dummy.add(new AdventureCard("Battle-Axe", 15));
         dummy.add(new AdventureCard("Lance", 20));
 
-        System.out.println("\nPlayer 1's hand:");
-        for (Card c : dummy) {
-            boolean contains = false;
-            for (Card c2 : game.players.getFirst().hand) {
-                if ((c.getName().equals(c2.getName()) && ((AdventureCard) c).value == ((AdventureCard) c2).value)) {
-                    contains = true;
-                    System.out.println(c2);
-                    game.players.getFirst().hand.remove(c2);
-                    break;
-                }
-            }
-            assertTrue(contains);
+        System.out.println("Player 1: " + game.players.getFirst());
+        for (int i = 0; i < dummy.size(); i++) {
+            assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.getFirst().hand.get(i).getName()));
+            assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.getFirst().hand.get(i)).value);
         }
-        System.out.println("\n");
 
-        eligiblePlayers.remove(game.players.getFirst());
 
-        addCard("Battle-Axe", 15, 1, game.players.get(2), game);
-        addCard("Sword", 10, 1, game.players.getLast(), game);
+        game.addCard("Battle-Axe", 15, 1, game.players.get(2), game);
+        game.addCard("Sword", 10, 1, game.players.getLast(), game);
+
+        game.sortHand(2);
+        game.sortHand(3);
 
         game.playStage(game.quest.get(2), eligiblePlayers, removePlayers, scanner4);
 
         game.adventureDeck.add(game.players.getLast().hand.removeLast());
         game.adventureDeck.add(game.players.get(2).hand.removeLast());
 
-        addCard("Foe", 30, 1, game.players.get(2), game);
-        addCard("Lance", 20, 1, game.players.getLast(), game);
+        game.addCard("Foe", 30, 1, game.players.get(2), game);
+        game.addCard("Lance", 20, 1, game.players.getLast(), game);
+
+        game.sortHand(2);
+        game.sortHand(3);
 
         game.playStage(game.quest.get(3), eligiblePlayers, removePlayers, scanner5);
+
         game.adventureDeck.add(game.players.getLast().hand.removeLast());
         game.adventureDeck.add(game.players.get(2).hand.removeLast());
 
-        eligiblePlayers.remove(game.players.get(2));
+        game.sortHand(2);
+        game.sortHand(3);
+
         game.rewardPlayers(eligiblePlayers);
 
         dummy.clear();
@@ -845,20 +858,11 @@ public class MainTest {
         dummy.add(new AdventureCard("Foe", 30));
         dummy.add(new AdventureCard("Sword", 10));
 
-        System.out.println("\nPlayer 3's hand:");
-        for (Card c : dummy) {
-            boolean contains = false;
-            for (Card c2 : game.players.get(2).hand) {
-                if ((c.getName().equals(c2.getName()) && ((AdventureCard) c).value == ((AdventureCard) c2).value)) {
-                    contains = true;
-                    System.out.println(c2);
-                    game.players.get(2).hand.remove(c2);
-                    break;
-                }
-            }
-            assertTrue(contains);
+        System.out.println("Player 3: " + game.players.get(2));
+        for (int i = 0; i < dummy.size(); i++) {
+            assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.get(2).hand.get(i).getName()));
+            assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.get(2).hand.get(i)).value);
         }
-        System.out.println("\n");
 
         assertEquals(0, game.players.get(2).shields);
 
@@ -868,43 +872,22 @@ public class MainTest {
         dummy.add(new AdventureCard("Foe", 40));
         dummy.add(new AdventureCard("Lance", 20));
 
-        System.out.println("\nPlayer 4's hand:");
-        for (Card c : dummy) {
-            boolean contains = false;
-            for (Card c2 : game.players.getLast().hand) {
-                if ((c.getName().equals(c2.getName()) && ((AdventureCard) c).value == ((AdventureCard) c2).value)) {
-                    contains = true;
-                    System.out.println(c2);
-                    game.players.getLast().hand.remove(c2);
-                    break;
-                }
-            }
-            assertTrue(contains);
+        System.out.println("Player 4: " + game.players.getLast());
+        for (int i = 0; i < dummy.size(); i++) {
+            assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.getLast().hand.get(i).getName()));
+            assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.getLast().hand.get(i)).value);
         }
-        System.out.println("\n");
 
         assertEquals(4, game.players.getLast().shields);
 
-        game.drawAdventure(4, game.players.getLast().draw);
+        game.drawAdventure(1, game.players.get(1).draw + ((QuestCard) game.currCard).stages);
+
+        game.trim(game.players.get(1), scanner6);
+
+        assertEquals(12, game.players.get(1).getHandSize());
 
     }
 
-    void addCard(String cardName, int value, int num, Player player, Game game) {
-        for (int i = 0; i < num; i++) {
-            for (int j = 0; j < game.adventureDeck.size(); j++) {
-                if (cardName.equalsIgnoreCase("Foe") && game.adventureDeck.get(j).getName().equalsIgnoreCase("Foe")) {
-                    if (value == ((AdventureCard) game.adventureDeck.get(j)).value) {
-                        player.hand.add(game.adventureDeck.get(j));
-                        game.adventureDiscard.add(game.adventureDeck.remove(j));
-                        break;
-                    }
-                } else if (game.adventureDeck.get(j).getName().equalsIgnoreCase(cardName)){
-                    player.hand.add(game.adventureDeck.get(j));
-                    game.adventureDiscard.add(game.adventureDeck.remove(j));
-                    break;
-                }
-            }
-        }
-    }
+
 
 }

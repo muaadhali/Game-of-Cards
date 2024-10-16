@@ -797,8 +797,6 @@ public class Game {
         game.initialize();
         game.initializeHands();
 
-        for (Player p : game.players) {
-            System.out.println(p.printableHand());
-        }
+        game.play();
     }
 }

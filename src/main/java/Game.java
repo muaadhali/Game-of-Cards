@@ -204,10 +204,11 @@ public class Game {
         for (int i = 0; i < quest.size(); i++) {
             System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
             System.out.println("Playing Stage #" + (i+1) + "...\n");
-            if (!playStage(quest.get(i), eligiblePlayers, removePlayers, scanner)) {
+            if (!playStage(quest.getFirst(), eligiblePlayers, removePlayers, scanner)) {
                 break;
             }
             System.out.println("\nStage " + (i+1) + " complete.");
+            quest.removeFirst();
         }
 
         rewardPlayers(eligiblePlayers);

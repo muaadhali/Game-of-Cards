@@ -797,7 +797,7 @@ public class MainTest {
         game.sortHand(2);
         game.sortHand(3);
 
-        game.playStage(game.quest.get(1), eligiblePlayers, removePlayers, scanner3);
+        game.playStage(game.quest.getFirst(), eligiblePlayers, removePlayers, scanner3);
 
         for (int i = 0; i < game.players.size(); i++) {
             if (i != 1) {
@@ -830,7 +830,7 @@ public class MainTest {
         game.sortHand(2);
         game.sortHand(3);
 
-        game.playStage(game.quest.get(2), eligiblePlayers, removePlayers, scanner4);
+        game.playStage(game.quest.getFirst(), eligiblePlayers, removePlayers, scanner4);
 
         game.adventureDeck.add(game.players.getLast().hand.removeLast());
         game.adventureDeck.add(game.players.get(2).hand.removeLast());
@@ -841,7 +841,7 @@ public class MainTest {
         game.sortHand(2);
         game.sortHand(3);
 
-        game.playStage(game.quest.get(3), eligiblePlayers, removePlayers, scanner5);
+        game.playStage(game.quest.getFirst(), eligiblePlayers, removePlayers, scanner5);
 
         game.adventureDeck.add(game.players.getLast().hand.removeLast());
         game.adventureDeck.add(game.players.get(2).hand.removeLast());

@@ -617,14 +617,12 @@ public class Game {
     }
 
     public void drawAdventure(int index, int num) {
-        Random rand = new Random();
 
         for (int j = 0; j < num; j++) {
             if (getAdventureDiscardSize() == 0) {
                 refillDeck(adventureDeck, adventureDiscard);
             }
-            int nextCard = rand.nextInt(getAdventureDeckSize());
-            players.get(index).hand.add(adventureDeck.remove(nextCard));
+            players.get(index).hand.add(adventureDeck.getLast());
             players.get(index).draw--;
         }
 
@@ -683,9 +681,9 @@ public class Game {
     private void refillDeck(ArrayList<Card> deck, ArrayList<Card> discard) {
         Random rand = new Random();
 
-        int totalAdvCards = discard.size();
+        int totalCards = discard.size();
 
-        for (int i = 0; i < totalAdvCards; i++) {
+        for (int i = 0; i < totalCards; i++) {
             int nextCard = rand.nextInt(discard.size());
             deck.add(discard.remove(nextCard));
         }

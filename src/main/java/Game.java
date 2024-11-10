@@ -89,12 +89,8 @@ public class Game {
     }
 
     public void drawEvent(Player currentPlayer) {
-        Random rand = new Random();
-
-        int nextEvent = rand.nextInt(eventDeck.size());
-
-        currCard = eventDeck.get(nextEvent);
-        eventDiscard.add(eventDeck.remove(nextEvent));
+        currCard = eventDeck.getLast();
+        eventDiscard.add(eventDeck.removeLast());
         currPlayer = currentPlayer;
     }
 
@@ -131,15 +127,27 @@ public class Game {
     public void resolveQuest(Scanner playerInput) {
         ArrayList<Player> eligibleSponsors = checkSponsorEligibility();
         boolean sponsored = false;
-        int sponsor = -1;
 
         if (eligibleSponsors.isEmpty()) {
             System.out.println("\nNo one is eligible to sponsor the quest.\n");
             return;
         }
 
-        System.out.println("# of Players Eligible To Sponsor Quest " + currCard + ": " + eligibleSponsors.size() + "\n");
+        setCurrSponsor(eligibleSponsors, sponsored, playerInput);
 
+        if (sponsored) {
+            setupQuest(currSponsor, playerInput);
+            playQuest(playerInput);
+
+            drawAdventure(players.indexOf(currSponsor), currSponsor.draw);
+            trim(currSponsor, playerInput);
+            currSponsor = null;
+        }
+
+    }
+
+    public void setCurrSponsor(ArrayList<Player> eligibleSponsors, boolean sponsored, Scanner playerInput) {
+        int sponsor = -1;
         int currPIndex = players.indexOf(currPlayer);
         for (int i = currPIndex; i < players.size(); i++) {
             printPlayer(players.get(i));
@@ -181,14 +189,7 @@ public class Game {
         if (sponsored) {
             currSponsor = players.get(sponsor);
             currSponsor.draw += ((QuestCard) currCard).shields;
-            setupQuest(players.get(sponsor), playerInput);
-            playQuest(playerInput);
-
-            for (Player p : players) {
-                drawAdventure(p.getId() -1, p.draw);
-            }
         }
-
     }
 
     public void playQuest(Scanner scanner) {
@@ -201,20 +202,20 @@ public class Game {
             }
         }
 
-        for (int i = 0; i < quest.size(); i++) {
+        int currStage = 1;
+        while (!quest.isEmpty()) {
             System.out.println("|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n<------------------------------------------------------------->\n");
-            System.out.println("Playing Stage #" + (i+1) + "...\n");
+            System.out.println("Playing Stage #" + currStage + "...\n");
             if (!playStage(quest.getFirst(), eligiblePlayers, removePlayers, scanner)) {
                 break;
             }
-            System.out.println("\nStage " + (i+1) + " complete.");
+            System.out.println("\nStage " + currStage++ + " complete.");
             quest.removeFirst();
         }
 
         rewardPlayers(eligiblePlayers);
 
         quest.clear();
-        currSponsor = null;
     }
 
     public void rewardPlayers(ArrayList<Player> winners) {
@@ -445,7 +446,7 @@ public class Game {
 
     public void trim(Player player, Scanner playerInput) {
 
-        if (player.getHandSize() == 12) {
+        if (player.getHandSize() <= 12) {
             return;
         }
 
@@ -580,18 +581,16 @@ public class Game {
         }
     }
 
-    public void addCard(String cardName, int value, int num, Player player, Game game) {
+    public void addCard(String cardName, int value, int num, Player player) {
         for (int i = 0; i < num; i++) {
-            for (int j = 0; j < game.adventureDeck.size(); j++) {
-                if (cardName.equalsIgnoreCase("Foe") && game.adventureDeck.get(j).getName().equalsIgnoreCase("Foe")) {
-                    if (value == ((AdventureCard) game.adventureDeck.get(j)).value) {
-                        player.hand.add(game.adventureDeck.get(j));
-                        game.adventureDiscard.add(game.adventureDeck.remove(j));
+            for (int j = 0; j < this.adventureDeck.size(); j++) {
+                if (cardName.equalsIgnoreCase("Foe") && this.adventureDeck.get(j).getName().equalsIgnoreCase("Foe")) {
+                    if (value == ((AdventureCard) this.adventureDeck.get(j)).value) {
+                        player.hand.add(this.adventureDeck.remove(j));
                         break;
                     }
-                } else if (game.adventureDeck.get(j).getName().equalsIgnoreCase(cardName)){
-                    player.hand.add(game.adventureDeck.get(j));
-                    game.adventureDiscard.add(game.adventureDeck.remove(j));
+                } else if (this.adventureDeck.get(j).getName().equalsIgnoreCase(cardName)){
+                    player.hand.add(this.adventureDeck.remove(j));
                     break;
                 }
             }
@@ -604,6 +603,7 @@ public class Game {
     }
 
     private boolean checkValid(String input, Player player) {
+        System.out.println("input = " + input);
         try {
             if (Integer.parseInt(input) < 1 || Integer.parseInt(input) > player.getHandSize()) {
                 System.out.println("\nInvalid Input.\n");
@@ -618,7 +618,6 @@ public class Game {
     }
 
     public void drawAdventure(int index, int num) {
-
         for (int j = 0; j < num; j++) {
             if (getAdventureDiscardSize() == 0) {
                 refillDeck(adventureDeck, adventureDiscard);
@@ -632,6 +631,7 @@ public class Game {
     public void sortHand(int index) {
         ArrayList<Card> temp = new ArrayList<>();
         ArrayList<String> names = new ArrayList<>();
+
 
         int min = 100;
         int indexMin = 0;

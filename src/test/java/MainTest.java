@@ -723,43 +723,43 @@ public class MainTest {
             game.adventureDeck.add(game.players.get(3).hand.removeFirst());
         }
 
-        game.addCard("Foe", 5, 2, game.players.getFirst(), game);
-        game.addCard("Foe", 15, 2, game.players.getFirst(), game);
-        game.addCard("Dagger", 5, 1, game.players.getFirst(), game);
-        game.addCard("Sword", 10, 2, game.players.getFirst(), game);
-        game.addCard("Horse", 10, 2, game.players.getFirst(), game);
-        game.addCard("Battle-Axe", 15, 2, game.players.getFirst(), game);
-        game.addCard("Lance", 20, 1, game.players.getFirst(), game);
+        game.addCard("Foe", 5, 2, game.players.getFirst());
+        game.addCard("Foe", 15, 2, game.players.getFirst());
+        game.addCard("Dagger", 5, 1, game.players.getFirst());
+        game.addCard("Sword", 10, 2, game.players.getFirst());
+        game.addCard("Horse", 10, 2, game.players.getFirst());
+        game.addCard("Battle-Axe", 15, 2, game.players.getFirst());
+        game.addCard("Lance", 20, 1, game.players.getFirst());
         System.out.println(game.players.getFirst().printableHand());
 
-        game.addCard("Foe", 5, 2, game.players.get(1), game);
-        game.addCard("Foe", 15, 2, game.players.get(1), game);
-        game.addCard("Foe", 40, 1, game.players.get(1), game);
-        game.addCard("Dagger", 5, 1, game.players.get(1), game);
-        game.addCard("Sword", 10, 1, game.players.get(1), game);
-        game.addCard("Horse", 10, 2, game.players.get(1), game);
-        game.addCard("Battle-Axe", 15, 2, game.players.get(1), game);
-        game.addCard("Excalibur", 30, 1, game.players.get(1), game);
+        game.addCard("Foe", 5, 2, game.players.get(1));
+        game.addCard("Foe", 15, 2, game.players.get(1));
+        game.addCard("Foe", 40, 1, game.players.get(1));
+        game.addCard("Dagger", 5, 1, game.players.get(1));
+        game.addCard("Sword", 10, 1, game.players.get(1));
+        game.addCard("Horse", 10, 2, game.players.get(1));
+        game.addCard("Battle-Axe", 15, 2, game.players.get(1));
+        game.addCard("Excalibur", 30, 1, game.players.get(1));
         System.out.println(game.players.get(1).printableHand());
 
-        game.addCard("Foe", 5, 3, game.players.get(2), game);
-        game.addCard("Foe", 15, 1, game.players.get(2), game);
-        game.addCard("Dagger", 5, 1, game.players.get(2), game);
-        game.addCard("Sword", 10, 3, game.players.get(2), game);
-        game.addCard("Horse", 10, 2, game.players.get(2), game);
-        game.addCard("Battle-Axe", 15, 1, game.players.get(2), game);
-        game.addCard("Lance", 20, 1, game.players.get(2), game);
+        game.addCard("Foe", 5, 3, game.players.get(2));
+        game.addCard("Foe", 15, 1, game.players.get(2));
+        game.addCard("Dagger", 5, 1, game.players.get(2));
+        game.addCard("Sword", 10, 3, game.players.get(2));
+        game.addCard("Horse", 10, 2, game.players.get(2));
+        game.addCard("Battle-Axe", 15, 1, game.players.get(2));
+        game.addCard("Lance", 20, 1, game.players.get(2));
         System.out.println(game.players.get(2).printableHand());
 
-        game.addCard("Foe", 5, 1, game.players.getLast(), game);
-        game.addCard("Foe", 15, 2, game.players.getLast(), game);
-        game.addCard("Foe", 40, 1, game.players.getLast(), game);
-        game.addCard("Dagger", 5, 2, game.players.getLast(), game);
-        game.addCard("Sword", 10, 1, game.players.getLast(), game);
-        game.addCard("Horse", 10, 2, game.players.getLast(), game);
-        game.addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
-        game.addCard("Lance", 20, 1, game.players.getLast(), game);
-        game.addCard("Excalibur", 30, 1, game.players.getLast(), game);
+        game.addCard("Foe", 5, 1, game.players.getLast());
+        game.addCard("Foe", 15, 2, game.players.getLast());
+        game.addCard("Foe", 40, 1, game.players.getLast());
+        game.addCard("Dagger", 5, 2, game.players.getLast());
+        game.addCard("Sword", 10, 1, game.players.getLast());
+        game.addCard("Horse", 10, 2, game.players.getLast());
+        game.addCard("Battle-Axe", 15, 1, game.players.getLast());
+        game.addCard("Lance", 20, 1, game.players.getLast());
+        game.addCard("Excalibur", 30, 1, game.players.getLast());
         System.out.println(game.players.getLast().printableHand());
 
         game.drawEvent(game.players.getFirst());
@@ -779,9 +779,9 @@ public class MainTest {
             }
         }
 
-        game.addCard("Foe", 30, 1, game.players.getFirst(), game);
-        game.addCard("Sword", 10, 1, game.players.get(2), game);
-        game.addCard("Battle-Axe", 15, 1, game.players.getLast(), game);
+        game.addCard("Foe", 30, 1, game.players.getFirst());
+        game.addCard("Sword", 10, 1, game.players.get(2));
+        game.addCard("Battle-Axe", 15, 1, game.players.getLast());
 
         game.sortHand(0);
         game.sortHand(2);
@@ -790,9 +790,9 @@ public class MainTest {
         game.playStage(game.quest.getFirst(), eligiblePlayers, removePlayers, scanner2);
 
 
-        game.addCard("Foe", 10, 1, game.players.getFirst(), game);
-        game.addCard("Lance", 20, 1, game.players.get(2), game);
-        game.addCard("Lance", 20, 1, game.players.getLast(), game);
+        game.addCard("Foe", 10, 1, game.players.getFirst());
+        game.addCard("Lance", 20, 1, game.players.get(2));
+        game.addCard("Lance", 20, 1, game.players.getLast());
 
         game.sortHand(0);
         game.sortHand(2);
@@ -825,8 +825,8 @@ public class MainTest {
         }
 
 
-        game.addCard("Battle-Axe", 15, 1, game.players.get(2), game);
-        game.addCard("Sword", 10, 1, game.players.getLast(), game);
+        game.addCard("Battle-Axe", 15, 1, game.players.get(2));
+        game.addCard("Sword", 10, 1, game.players.getLast());
 
         game.sortHand(2);
         game.sortHand(3);
@@ -836,8 +836,8 @@ public class MainTest {
         game.adventureDeck.add(game.players.getLast().hand.removeLast());
         game.adventureDeck.add(game.players.get(2).hand.removeLast());
 
-        game.addCard("Foe", 30, 1, game.players.get(2), game);
-        game.addCard("Lance", 20, 1, game.players.getLast(), game);
+        game.addCard("Foe", 30, 1, game.players.get(2));
+        game.addCard("Lance", 20, 1, game.players.getLast());
 
         game.sortHand(2);
         game.sortHand(3);

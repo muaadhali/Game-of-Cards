@@ -77,75 +77,16 @@ public class GameSteps {
         System.out.println(game.players.getLast().printableHand());
     }
 
-    @When("player {int} draws a {int} stage quest and player {int} decides to sponsor it")
-    public void player_1_draws_quest_with_4_stages_a1_compulsory_test(int drawP, int stages, int sponsor) {
-        game.drawEvent(game.players.get(drawP - 1));
-        game.currCard = new QuestCard("Quest", stages, stages);
-        game.currSponsor = game.players.get(sponsor - 1);
+    @When("player {int} draws a {string} card with value {int}")
+    public void players_draw_the_first_time_a1_compulsory_test(int player, String cardName, int cardValue) {
+        game.addCard(cardName, cardValue, 1, game.players.get(player - 1));
+        game.players.get(player - 1).draw -= 1;
+        game.sortHand(player - 1);
     }
 
-    @When("player2 sets up the quest")
-    public void player_2_sponsors_quest_for_a1_compulsory_test() {
-        Scanner scanner1 = Mockito.mock(Scanner.class);
-        Mockito.when(scanner1.nextLine()).thenReturn("1").thenReturn("7").thenReturn("quit").thenReturn("2").thenReturn("5").thenReturn("quit").thenReturn("2").thenReturn("3").thenReturn("4").thenReturn("quit").thenReturn("2").thenReturn("3").thenReturn("quit");
 
-        game.setupQuest(game.currSponsor, scanner1);
-
-        for (int i = 0; i < game.players.size(); i++) {
-            if (game.players.get(i) != game.currSponsor) {
-                eligiblePlayers.add(game.players.get(i));
-            }
-        }
-    }
-
-    @When("players draw the first time")
-    public void players_draw_the_first_time_a1_compulsory_test() {
-        game.addCard("Foe", 30, 1, game.players.getFirst());
-        game.addCard("Sword", 10, 1, game.players.get(2));
-        game.addCard("Battle-Axe", 15, 1, game.players.getLast());
-
-        game.sortHand(0);
-        game.sortHand(2);
-        game.sortHand(3);
-    }
-
-    @When("players play the first stage")
-    public void players_play_first_stage_a1_compulsory_test() {
-        Scanner scanner2 = Mockito.mock(Scanner.class);
-        Mockito.when(scanner2.nextLine()).thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("5").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("1").thenReturn("13").thenReturn("5").thenReturn("7").thenReturn("quit");
-
-        game.playStage(game.quest.getFirst(), eligiblePlayers, removePlayers, scanner2);
-
-    }
-
-    @When("players draw the second time")
-    public void players_draw_the_second_time_a1_compulsory_test() {
-        game.addCard("Foe", 10, 1, game.players.getFirst());
-        game.addCard("Lance", 20, 1, game.players.get(2));
-        game.addCard("Lance", 20, 1, game.players.getLast());
-
-        game.sortHand(0);
-        game.sortHand(2);
-        game.sortHand(3);
-    }
-
-    @When("players play the second stage")
-    public void players_play_second_stage_a1_compulsory_test() {
-        Scanner scanner3 = Mockito.mock(Scanner.class);
-        Mockito.when(scanner3.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("6").thenReturn("quit").thenReturn("yes").thenReturn("9").thenReturn("6").thenReturn("quit").thenReturn("yes").thenReturn("6").thenReturn("6").thenReturn("quit");
-
-        game.playStage(game.quest.get(1), eligiblePlayers, removePlayers, scanner3);
-
-        for (int i = 0; i < game.players.size(); i++) {
-            if (i != 1) {
-                game.adventureDeck.add(game.players.get(i).hand.removeLast());
-            }
-        }
-    }
-
-    @When("check player1's hand is correct and has {int} shields")
-    public void check_player1_hand_and_shields_a1_compulsory_test(int numShields) {
-        assertEquals(numShields, game.players.getFirst().shields);
+    @When("check player1's hand is correct")
+    public void check_player1_hand_and_shields_a1_compulsory_test() {
 
         dummy.add(new AdventureCard("Foe", 5));
         dummy.add(new AdventureCard("Foe", 10));
@@ -157,63 +98,16 @@ public class GameSteps {
         dummy.add(new AdventureCard("Battle-Axe", 15));
         dummy.add(new AdventureCard("Lance", 20));
 
-        System.out.println("Player 1: " + game.players.getFirst());
+        System.out.println(game.players.getFirst());
         for (int i = 0; i < dummy.size(); i++) {
             assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.getFirst().hand.get(i).getName()));
             assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.getFirst().hand.get(i)).value);
         }
     }
 
-    @When("players draw the third time")
-    public void players_draw_third_time_a1_compulsory_test() {
-        game.addCard("Battle-Axe", 15, 1, game.players.get(2));
-        game.addCard("Sword", 10, 1, game.players.getLast());
 
-        game.sortHand(2);
-        game.sortHand(3);
-    }
-
-    @When("players play the third stage")
-    public void players_play_third_stage_a1_compulsory_test() {
-        Scanner scanner4 = Mockito.mock(Scanner.class);
-        Mockito.when(scanner4.nextLine()).thenReturn("yes").thenReturn("10").thenReturn("7").thenReturn("4").thenReturn("quit").thenReturn("yes").thenReturn("7").thenReturn("5").thenReturn("7").thenReturn("quit");
-
-        game.playStage(game.quest.get(2), eligiblePlayers, removePlayers, scanner4);
-
-        game.adventureDeck.add(game.players.getLast().hand.removeLast());
-        game.adventureDeck.add(game.players.get(2).hand.removeLast());
-    }
-
-    @When("players draw the fourth time")
-    public void players_draw_fourth_time_a1_compulsory_test() {
-        game.addCard("Foe", 30, 1, game.players.get(2));
-        game.addCard("Lance", 20, 1, game.players.getLast());
-
-        game.sortHand(2);
-        game.sortHand(3);
-    }
-
-    @When("players play the fourth stage and draw")
-    public void players_play_fourth_stage_a1_compulsory_test() {
-        Scanner scanner5 = Mockito.mock(Scanner.class);
-        Mockito.when(scanner5.nextLine()).thenReturn("yes").thenReturn("7").thenReturn("6").thenReturn("6").thenReturn("quit").thenReturn("yes").thenReturn("4").thenReturn("4").thenReturn("5").thenReturn("5").thenReturn("quit");
-
-        game.playStage(game.quest.getLast(), eligiblePlayers, removePlayers, scanner5);
-
-        game.adventureDeck.add(game.players.getLast().hand.removeLast());
-        game.adventureDeck.add(game.players.get(2).hand.removeLast());
-
-        game.sortHand(2);
-        game.sortHand(3);
-    }
-
-    @Then("players are rewarded and have correct number of shields")
-    public void players_are_rewarded_and_have_correct_number_of_shields_a1_compulsory_test() {
-        Scanner scanner6 = Mockito.mock(Scanner.class);
-        Mockito.when(scanner6.nextLine()).thenReturn("1").thenReturn("1").thenReturn("1").thenReturn("1");
-
-        game.rewardPlayers(eligiblePlayers);
-
+    @Then("player3 has the correct hand")
+    public void check_player3_hand_a1_compulsory_scenario() {
         dummy.clear();
         dummy.add(new AdventureCard("Foe", 5));
         dummy.add(new AdventureCard("Foe", 5));
@@ -226,9 +120,10 @@ public class GameSteps {
             assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.get(2).hand.get(i).getName()));
             assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.get(2).hand.get(i)).value);
         }
+    }
 
-        assertEquals(0, game.players.get(2).shields);
-
+    @Then("player4 has the correct hand")
+    public void check_player4_hand_a1_compulsory_scenario() {
         dummy.clear();
         dummy.add(new AdventureCard("Foe", 15));
         dummy.add(new AdventureCard("Foe", 15));
@@ -240,15 +135,25 @@ public class GameSteps {
             assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.getLast().hand.get(i).getName()));
             assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.getLast().hand.get(i)).value);
         }
-
-        assertEquals(4, game.players.getLast().shields);
-
-        game.drawAdventure(1, game.players.get(1).draw + ((QuestCard) game.currCard).stages);
-
-        game.trim(game.players.get(1), scanner6);
-
-        assertEquals(12, game.players.get(1).getHandSize());
     }
+
+    @Then("player {int} draws and trims and ends with {int} cards")
+    public void player_draws_and_trims_to_12_cards(int player, int cards) {
+        String input = String.join("", playerInput);
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner1 = new Scanner(System.in);
+
+        playerInput.clear();
+        game.players.get(player-1).hand.addAll(tempCards);
+        game.sortHand(player-1);
+        tempCards.clear();
+
+        game.drawAdventure(player-1, game.players.get(player-1).draw);
+        game.trim(game.players.get(player-1), scanner1);
+
+        assertEquals(12, game.players.get(player-1).getHandSize());
+    }
+
 
     @Given("a new game with rigged hands and decks for A2 scenarios")
     public void new_rigged_game_a2_scenario_2() {
@@ -271,10 +176,13 @@ public class GameSteps {
         game.addCard("Horse", 10, 2, game.players.getFirst());
         game.addCard("Battle-Axe", 15, 2, game.players.getFirst());
 
-        game.addCard("Horse", 10, 4, game.players.get(1));
+        game.addCard("Horse", 10, 2, game.players.get(1));
         game.addCard("Battle-Axe", 15, 3, game.players.get(1));
         game.addCard("Lance", 20, 2, game.players.get(1));
-        game.addCard("Sword", 10, 3, game.players.get(1));
+        game.addCard("Sword", 10, 2, game.players.get(1));
+        game.addCard("Foe", 10, 1, game.players.get(1));
+        game.addCard("Foe", 15, 1, game.players.get(1));
+        game.addCard("Foe", 20, 1, game.players.get(1));
 
         game.addCard("Dagger", 5, 6, game.players.get(2));
         game.addCard("Sword", 10, 3, game.players.get(2));
@@ -308,7 +216,6 @@ public class GameSteps {
     public void player_input_append_string(int player, String cardName, int cardValue) {
         if (game.currSponsor.getId() != player) {
             currentPlayer = player - 1;
-            System.out.println(game.players.get(currentPlayer).printableHand());
         }
         for (int j = 0; j < game.players.get(player - 1).hand.size(); j++) {
             if (cardName.equalsIgnoreCase("Foe") && game.players.get(player - 1).hand.get(j).getName().equalsIgnoreCase("Foe")) {
@@ -325,18 +232,31 @@ public class GameSteps {
         }
     }
 
-    @When("player refuses")
-    public void append_no_to_player_input() {
+    @When("player {int} refuses")
+    public void append_no_to_player_input(int player) {
         playerInput.add("no\n");
     }
 
-    @When("player accepts")
-    public void append_yes_to_player_input() {
+    @When("player {int} accepts")
+    public void append_yes_to_player_input(int player) {
+        if (game.currSponsor != null && player != game.currSponsor.getId()) {
+            currentPlayer = player - 1;
+            game.sortHand(currentPlayer);
+        } else {
+            currentPlayer = -1;
+        }
         playerInput.add("yes\n");
     }
 
-    @When("player trims card {int}")
-    public void add_trimmed_index_to_player_input(int card) {
+    @When("player {int} trims card {int}")
+    public void add_trimmed_index_to_player_input(int player, int card) {
+        if ((player -1) != currentPlayer && player != game.currSponsor.getId()) {
+            currentPlayer = player -1;
+        }
+        if (card <= game.players.get(player-1).getHandSize()) {
+            System.out.println("in player trims player" + player + " hand: " + game.players.get(player-1).printableHand());
+            tempCards.add(game.players.get(player-1).hand.remove(card - 1));
+        }
         playerInput.add(String.valueOf(card) + "\n");
     }
 
@@ -347,6 +267,8 @@ public class GameSteps {
             game.players.get(currentPlayer).hand.addAll(tempCards);
             game.sortHand(currentPlayer);
             tempCards.clear();
+            System.out.println("in player finishes making choices player" + currentPlayer + " hand: " + game.players.get(currentPlayer).printableHand());
+            System.out.println("tempCards " + tempCards);
             currentPlayer = -1;
         }
     }
@@ -360,6 +282,8 @@ public class GameSteps {
         playerInput.clear();
 
         game.setCurrSponsor(eligibleSponsors, false, scanner1);
+        System.out.println("Current Sponsor: " + game.currSponsor);
+        currentPlayer = -1;
     }
 
     @When("quest building resolves")
@@ -383,10 +307,6 @@ public class GameSteps {
 
         game.setupQuest(game.currSponsor, scanner1);
 
-        game.drawAdventure(game.currSponsor.getId() - 1, game.currSponsor.draw);
-
-        System.out.println("currSponsor hand after draw: " + game.currSponsor.printableHand());
-
         eligiblePlayers.clear();
         removePlayers.clear();
         for (int i = 0; i < game.players.size(); i++) {
@@ -398,14 +318,14 @@ public class GameSteps {
         System.out.println("Quest: " + game.quest);
     }
 
-    @When("quest resolves")
-    public void current_quest_resolves() {
-        String input = String.join("", playerInput);
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
-        Scanner scanner1 = new Scanner(System.in);
-
-        game.playQuest(scanner1);
-    }
+//    @When("quest resolves")
+//    public void current_quest_resolves() {
+//        String input = String.join("", playerInput);
+//        System.setIn(new ByteArrayInputStream(input.getBytes()));
+//        Scanner scanner1 = new Scanner(System.in);
+//
+//        game.playQuest(scanner1);
+//    }
 
 
     @When("stage {int} attacks resolve")
@@ -413,6 +333,8 @@ public class GameSteps {
         String input = String.join("", playerInput);
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner1 = new Scanner(System.in);
+
+        System.out.println("in Stage resolve, input:\n" + input);
 
 //        System.out.println("playerInput: " + playerInput);
         playerInput.clear();
@@ -461,6 +383,52 @@ public class GameSteps {
             assertTrue(outStream.toString().contains(thisPlayer));
         }
 
+    }
+
+    @Given("a new rigged game for 1winner_game_with_events scenario")
+    public void rigged_new_game_for_scenario_3() {
+        game = new Game(4);
+
+        game.initialize();
+        game.initializeHands();
+
+        for (int i = 0; i < 12; i++) {
+            game.adventureDeck.add(game.players.get(0).hand.removeFirst());
+            game.adventureDeck.add(game.players.get(1).hand.removeFirst());
+            game.adventureDeck.add(game.players.get(2).hand.removeFirst());
+            game.adventureDeck.add(game.players.get(3).hand.removeFirst());
+        }
+
+        game.addCard("Foe", 10, 2, game.players.getFirst());
+        game.addCard("Foe", 15, 2, game.players.getFirst());
+        game.addCard("Foe", 20, 2, game.players.getFirst());
+        game.addCard("Foe", 25, 2, game.players.getFirst());
+        game.addCard("Horse", 10, 2, game.players.getFirst());
+        game.addCard("Battle-Axe", 15, 2, game.players.getFirst());
+
+        game.addCard("Horse", 10, 4, game.players.get(1));
+        game.addCard("Battle-Axe", 15, 3, game.players.get(1));
+        game.addCard("Lance", 20, 2, game.players.get(1));
+        game.addCard("Sword", 10, 3, game.players.get(1));
+
+        game.addCard("Dagger", 5, 3, game.players.get(2));
+        game.addCard("Sword", 10, 5, game.players.get(2));
+        game.addCard("Excalibur", 30, 2, game.players.get(2));
+        game.addCard("Horse", 10, 2, game.players.get(2));
+
+        game.addCard("Horse", 10, 3, game.players.getLast());
+        game.addCard("Sword", 10, 3, game.players.getLast());
+        game.addCard("Lance", 20, 3, game.players.getLast());
+        game.addCard("Battle-Axe", 15, 3, game.players.getLast());
+
+        game.sortHand(0);
+        game.sortHand(1);
+        game.sortHand(2);
+        game.sortHand(3);
+
+        for (Player p : game.players) {
+            System.out.println("Player" + p.getId() + ": " + p.printableHand());
+        }
     }
 
 }

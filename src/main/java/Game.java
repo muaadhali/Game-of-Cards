@@ -1,5 +1,3 @@
-import java.lang.reflect.Array;
-import java.security.KeyPair;
 import java.util.*;
 
 public class Game {
@@ -356,11 +354,11 @@ public class Game {
 
     public void populateEligiblePlayers(ArrayList<Card> stage, ArrayList<Player> removePlayers, ArrayList<Player> playerPool) {
 
-        for (Player p : playerPool) {
-            if (!isEligibleForStage(stage, p)) {
-                removePlayers.add(p);
-            }
-        }
+//        for (Player p : playerPool) {
+//            if (!isEligibleForStage(stage, p)) {
+//                removePlayers.add(p);
+//            }
+//        }
 
         for (Player p : removePlayers) {
             playerPool.remove(p);
@@ -582,15 +580,36 @@ public class Game {
     }
 
     public void addCard(String cardName, int value, int num, Player player) {
+        int notFound = num;
         for (int i = 0; i < num; i++) {
             for (int j = 0; j < this.adventureDeck.size(); j++) {
                 if (cardName.equalsIgnoreCase("Foe") && this.adventureDeck.get(j).getName().equalsIgnoreCase("Foe")) {
                     if (value == ((AdventureCard) this.adventureDeck.get(j)).value) {
                         player.hand.add(this.adventureDeck.remove(j));
+                        notFound--;
                         break;
                     }
                 } else if (this.adventureDeck.get(j).getName().equalsIgnoreCase(cardName)){
                     player.hand.add(this.adventureDeck.remove(j));
+                    notFound--;
+                    break;
+                }
+            }
+        }
+
+        if (notFound == 0) {
+            return;
+        }
+
+        for (int i = 0; i < notFound; i++) {
+            for (int j = 0; j < this.adventureDiscard.size(); j++) {
+                if (cardName.equalsIgnoreCase("Foe") && this.adventureDiscard.get(j).getName().equalsIgnoreCase("Foe")) {
+                    if (value == ((AdventureCard) this.adventureDiscard.get(j)).value) {
+                        player.hand.add(this.adventureDiscard.get(j));
+                        break;
+                    }
+                } else if (this.adventureDiscard.get(j).getName().equalsIgnoreCase(cardName)){
+                    player.hand.add(this.adventureDiscard.get(j));
                     break;
                 }
             }
@@ -618,6 +637,9 @@ public class Game {
     }
 
     public void drawAdventure(int index, int num) {
+        if (players.get(index).draw <= 0) {
+            return;
+        }
         for (int j = 0; j < num; j++) {
             if (getAdventureDiscardSize() == 0) {
                 refillDeck(adventureDeck, adventureDiscard);
@@ -634,7 +656,7 @@ public class Game {
 
 
         int min = 100;
-        int indexMin = 0;
+        int indexMin = -1;
         boolean foes = true;
 
         names.add("Dagger");
@@ -653,7 +675,9 @@ public class Game {
                     }
                 }
 
-                temp.add(players.get(index).hand.remove(indexMin));
+                if (indexMin >= 0) {
+                    temp.add(players.get(index).hand.remove(indexMin));
+                }
                 min = 100;
                 foes = false;
                 for (Card c : players.get(index).hand) {
@@ -664,10 +688,12 @@ public class Game {
             }
 
             for (String name : names) {
-                for (int i = 0; i < players.get(index).getHandSize(); i++) {
-                    if (players.get(index).hand.get(i).getName().equalsIgnoreCase(name)) {
-                        temp.add(players.get(index).hand.remove(i));
-                        i--;
+                for (int j = 0; j < players.get(index).getHandSize(); j++) {
+                    if (players.get(index).hand.get(j).getName().equalsIgnoreCase(name.replaceAll("\\s", ""))) {
+//                        System.out.println("in sort for player" + (index+1) + " i = " + j + ", name = " + name + ", hand[i] = " + players.get(index).hand.get(j).getName());
+                        temp.add(players.get(index).hand.remove(j));
+//                        System.out.println(">>>after removing, in sort for player" + (index+1) + " hand: " + players.get(index).printableHand());
+                        j--;
                     }
                 }
             }

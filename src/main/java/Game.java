@@ -44,7 +44,9 @@ public class Game {
         for (int i = 0; i < players.size(); i++) {
             players.get(i).draw = 12;
             drawAdventure(i, players.get(i).draw);
+            System.out.println(players.get(i));
             sortHand(i);
+            System.out.println(players.get(i));
         }
     }
 
@@ -78,8 +80,10 @@ public class Game {
             resolveEvent();
         }
 
-        trim(currentPlayer, playerInput);
-        sortHand(currentPlayer.getId()-1);
+        for (Player player : players) {
+            trim(player, playerInput);
+            sortHand(player.getId()-1);
+        }
 
         System.out.println("Press <Return> to end turn.");
         playerInput.nextLine();
@@ -131,7 +135,7 @@ public class Game {
             return;
         }
 
-        setCurrSponsor(eligibleSponsors, sponsored, playerInput);
+        sponsored = setCurrSponsor(eligibleSponsors, playerInput);
 
         if (sponsored) {
             setupQuest(currSponsor, playerInput);
@@ -144,8 +148,9 @@ public class Game {
 
     }
 
-    public void setCurrSponsor(ArrayList<Player> eligibleSponsors, boolean sponsored, Scanner playerInput) {
+    public boolean setCurrSponsor(ArrayList<Player> eligibleSponsors, Scanner playerInput) {
         int sponsor = -1;
+        boolean sponsored = false;
         int currPIndex = players.indexOf(currPlayer);
         for (int i = currPIndex; i < players.size(); i++) {
             printPlayer(players.get(i));
@@ -159,6 +164,7 @@ public class Game {
             }
 
             if (playerQuestResponse(playerInput)) {
+                System.out.println("In player quest response");
                 sponsored = true;
                 sponsor = i;
                 break;
@@ -178,6 +184,7 @@ public class Game {
                 }
 
                 if (playerQuestResponse(playerInput)) {
+                    System.out.println("In player quest response");
                     sponsored = true;
                     sponsor = i;
                     break;
@@ -185,9 +192,12 @@ public class Game {
             }
         }
         if (sponsored) {
+            System.out.println("Sponsored is true");
             currSponsor = players.get(sponsor);
             currSponsor.draw += ((QuestCard) currCard).shields;
         }
+
+        return sponsored;
     }
 
     public void playQuest(Scanner scanner) {
@@ -644,7 +654,7 @@ public class Game {
             if (getAdventureDiscardSize() == 0) {
                 refillDeck(adventureDeck, adventureDiscard);
             }
-            players.get(index).hand.add(adventureDeck.getLast());
+            players.get(index).hand.add(adventureDeck.removeLast());
             players.get(index).draw--;
         }
 
@@ -690,9 +700,7 @@ public class Game {
             for (String name : names) {
                 for (int j = 0; j < players.get(index).getHandSize(); j++) {
                     if (players.get(index).hand.get(j).getName().equalsIgnoreCase(name.replaceAll("\\s", ""))) {
-//                        System.out.println("in sort for player" + (index+1) + " i = " + j + ", name = " + name + ", hand[i] = " + players.get(index).hand.get(j).getName());
                         temp.add(players.get(index).hand.remove(j));
-//                        System.out.println(">>>after removing, in sort for player" + (index+1) + " hand: " + players.get(index).printableHand());
                         j--;
                     }
                 }
@@ -821,6 +829,9 @@ public class Game {
         Game game = new Game(2);
         game.initialize();
         game.initializeHands();
+
+        System.out.println(game.adventureDeck);
+        System.out.println(game.eventDeck);
 
         game.play();
     }

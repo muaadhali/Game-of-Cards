@@ -1,13 +1,13 @@
-import io.cucumber.java.bs.A;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +22,12 @@ public class GameSteps {
     private ArrayList<Card> tempCards = new ArrayList<>();
     private ArrayList<String> playerInput = new ArrayList<>();
     private int currentPlayer = -1;
+
+    private Map<String, String> events = new HashMap<>(){{
+        put("Plague", "The player who draws this card immediately loses 2 shields.");
+        put("Queen's Favor", "The player who draws this card immediately draws 2 adventure cards.");
+        put("Prosperity", "All players immediately draw 2 adventure cards.");
+    }};
 
     @Given("a new game with rigged hands from assignment one")
     public void a_new_game_for_a1_compulsory_test(){
@@ -137,7 +143,7 @@ public class GameSteps {
         }
     }
 
-    @Then("player {int} draws and trims and ends with {int} cards")
+    @Then("player {int} drawing and trimming resolves and ends with {int} cards")
     public void player_draws_and_trims_to_12_cards(int player, int cards) {
         String input = String.join("", playerInput);
         System.setIn(new ByteArrayInputStream(input.getBytes()));
@@ -154,8 +160,27 @@ public class GameSteps {
         assertEquals(12, game.players.get(player-1).getHandSize());
     }
 
+    @Then("player {int} drawing resolves")
+    public void player_draws(int player) {
+        game.drawAdventure(player-1, game.players.get(player-1).draw);
+    }
 
-    @Given("a new game with rigged hands and decks for A2 scenarios")
+    @Then("player {int} trimming resolves")
+    public void player_trims_to_12_cards(int player) {
+        String input = String.join("", playerInput);
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Scanner scanner1 = new Scanner(System.in);
+
+        playerInput.clear();
+        game.players.get(player-1).hand.addAll(tempCards);
+        game.sortHand(player-1);
+        tempCards.clear();
+
+        game.trim(game.players.get(player-1), scanner1);
+    }
+
+
+    @Given("a new game with rigged hands and decks for 2winner_game_2winner_quest scenario")
     public void new_rigged_game_a2_scenario_2() {
         game = new Game(4);
 
@@ -254,7 +279,7 @@ public class GameSteps {
             currentPlayer = player -1;
         }
         if (card <= game.players.get(player-1).getHandSize()) {
-            System.out.println("in player trims player" + player + " hand: " + game.players.get(player-1).printableHand());
+//            System.out.println("in player trims player" + player + " hand: " + game.players.get(player-1).printableHand());
             tempCards.add(game.players.get(player-1).hand.remove(card - 1));
         }
         playerInput.add(String.valueOf(card) + "\n");
@@ -267,8 +292,8 @@ public class GameSteps {
             game.players.get(currentPlayer).hand.addAll(tempCards);
             game.sortHand(currentPlayer);
             tempCards.clear();
-            System.out.println("in player finishes making choices player" + currentPlayer + " hand: " + game.players.get(currentPlayer).printableHand());
-            System.out.println("tempCards " + tempCards);
+//            System.out.println("in player finishes making choices player" + currentPlayer + " hand: " + game.players.get(currentPlayer).printableHand());
+//            System.out.println("tempCards " + tempCards);
             currentPlayer = -1;
         }
     }
@@ -281,13 +306,13 @@ public class GameSteps {
 
         playerInput.clear();
 
-        game.setCurrSponsor(eligibleSponsors, false, scanner1);
-        System.out.println("Current Sponsor: " + game.currSponsor);
+        game.setCurrSponsor(eligibleSponsors, scanner1);
+//        System.out.println("Current Sponsor: " + game.currSponsor);
         currentPlayer = -1;
     }
 
     @When("quest building resolves")
-    public void player_sets_up_stage() {
+    public void player_sets_up_quest() {
         String input = String.join("", playerInput);
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner1 = new Scanner(System.in);
@@ -334,7 +359,7 @@ public class GameSteps {
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         Scanner scanner1 = new Scanner(System.in);
 
-        System.out.println("in Stage resolve, input:\n" + input);
+//        System.out.println("in Stage resolve, input:\n" + input);
 
 //        System.out.println("playerInput: " + playerInput);
         playerInput.clear();
@@ -429,6 +454,22 @@ public class GameSteps {
         for (Player p : game.players) {
             System.out.println("Player" + p.getId() + ": " + p.printableHand());
         }
+    }
+
+    @When("player {int} draws a {string} event card")
+    public void player_draws_event_card(int player, String event) {
+        game.drawEvent(game.players.get(player - 1));
+        game.currCard = new EventCard(event, events.get(event));
+    }
+
+    @When("the event resolves")
+    public void event_resolves() {
+        game.resolveEvent();
+    }
+
+    @When("player {int} has {int} cards")
+    public void check_player_hand_size(int player, int cards) {
+        assertEquals(cards, game.players.get(player - 1).getHandSize());
     }
 
 }

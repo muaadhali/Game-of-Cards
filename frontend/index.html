@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div>
+            <label for="game-info"><strong>Game Information:</strong></label>
+            <textarea id="game-info" readonly></textarea>
+        </div>
+
+        <div>
+            <label for="trim-input"><strong>Enter Card Indices When Trimming (comma-separated):</strong></label>
+            <input type="text" id="trim-input" placeholder="e.g. 1,2">
+        </div>
+
+        <div>
+            <button id="continue-button" onclick="continuebtn()">Start Game</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

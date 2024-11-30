@@ -11,13 +11,13 @@ async function continuebtn() {
             resolveEvent();
             break;
         case "/resolveEvent":
-            checkTrim()
+            checkTrim();
             break;
         case "/fetchTrimmer":
-            trim()
+            trim();
             break;
         case "/trim":
-            
+            checkTrim();
             break;
     
         default:
@@ -53,7 +53,7 @@ async function resolveEvent() {
 
 async function checkTrim() {
     let gameInfo = document.getElementById("game-info").value;
-    if (gameInfo.includes("and some need to trim.") || gameInfo.includes("and needs to trim.")) {
+    if (gameInfo.includes("and some need to trim.") || gameInfo.includes("and needs to trim.") || gameInfo.includes("needs to trim next.")) {
         try {
             const drawOutput = await fetch(`${apiBaseUrl}/fetchTrimmer`);
             const player = await drawOutput.json();
@@ -65,6 +65,8 @@ async function checkTrim() {
         } catch (error) {
             console.error("Error in fetchTrimmer:", error);
         }
+    } else {
+        start();
     }
 }
 

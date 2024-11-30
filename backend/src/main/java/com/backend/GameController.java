@@ -56,6 +56,7 @@ public class GameController {
                 currPlayer.draw += 2;
                 drawAdventure(currPlayer.getId()-1, 2);
                 result = "Player " + currPlayer.getId() + " has drawn 2 cards" + ((currPlayer.getHandSize() > 12) ? " and needs to trim." : " and does not need to trim.");
+                trimmer = (currPlayer.getHandSize() > 12)? currPlayer.getId()-1 : -1;
                 break;
             case "Prosperity":
                 for (int i = 0; i < players.size(); i++) {

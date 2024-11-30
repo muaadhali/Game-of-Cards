@@ -3,10 +3,7 @@ package com.backend;
 import com.game.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "http://127.0.0.1:8080")
@@ -41,7 +38,7 @@ public class GameController {
         round++;
         drawEvent();
 
-        return "CURRENT PLAYER\n\n" + currPlayer + "\n\nPlayer " + currPlayer.getId() + " has drawn a " + currCard + ".";
+        return "CURRENT PLAYER\n\n" + currPlayer + "\n\nPlayer " + currPlayer.getId() + " has drawn a" + ((currCard instanceof QuestCard) ? " Quest: " : "n Event: ") + currCard + ".";
     }
 
     @GetMapping("/resolveEvent")
@@ -72,6 +69,42 @@ public class GameController {
         }
 
         return result;
+    }
+
+    @GetMapping("/resolveQuest")
+    public String resolveQuest() {
+        String result = "";
+        ArrayList<Player> eligibleSponsors = checkSponsorEligibility();
+
+        if (eligibleSponsors.isEmpty()) {
+            result = "\nNo one is eligible to sponsor the quest.\n";
+        } else {
+            result += eligibleSponsors.get(0).toString() + "\n\nWould you like to sponser the Quest: " + currCard + "?";
+        }
+        return result;
+    }
+
+    @GetMapping("resolveSponsorChoice")
+    public void resolveSponsorChoice() {
+
+    }
+
+    public ArrayList<Player> checkSponsorEligibility() {
+        ArrayList<Player> eligibleSponsors = new ArrayList<>();
+        QuestCard quest = (QuestCard) currCard;
+        for (Player player : players) {
+            int count = 0;
+            for (Card j : player.hand) {
+                if (j.getName().equals("Foe")) {
+                    count++;
+                }
+            }
+            if (count >= quest.stages) {
+                eligibleSponsors.add(player);
+            }
+        }
+
+        return eligibleSponsors;
     }
 
     @GetMapping("/fetchTrimmer")

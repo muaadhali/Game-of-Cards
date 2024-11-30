@@ -8,7 +8,12 @@ async function continuebtn() {
             start();
             break;
         case "/start":
-            resolveEvent();
+            const gameInfo = document.getElementById("game-info").value;
+            if (gameInfo.includes("Quest")) {
+                resolveQuest();
+            } else {
+                resolveEvent();
+            }
             break;
         case "/resolveEvent":
             checkTrim();
@@ -51,6 +56,24 @@ async function resolveEvent() {
     }
 }
 
+async function resolveQuest() {
+    try {
+        const drawOutput = await fetch(`${apiBaseUrl}/resolveQuest`);
+        const result = await drawOutput.text();
+        console.log("Start Game Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("continue-button").innerText = "Continue";
+        if (result.includes("?")) {
+            document.getElementById("input-section").style.display = "block";
+            document.getElementById("input-label").innerText = "Enter Yes/No Below";
+            document.getElementById("trim-input").placeholder = "Yes";
+        }
+        history.pushState({}, '', '/resolveQuest');
+    } catch (error) {
+        console.error("Error in resolveQuest:", error);
+    }
+}
+
 async function checkTrim() {
     let gameInfo = document.getElementById("game-info").value;
     if (gameInfo.includes("and some need to trim.") || gameInfo.includes("and needs to trim.") || gameInfo.includes("needs to trim next.")) {
@@ -60,7 +83,7 @@ async function checkTrim() {
             const result = `Player: ${player.id}\tShields: ${player.shields}\nHand: ${player.hand.map((Card, index) => `|${index + 1}. Name: ${Card.name}, Value: ${Card.value}|`).join(", ")}\n\nTrim ${player.hand.length - 12} cards, type your choices for trimming below.`
             console.log("Start Game Response:", result); 
             document.getElementById("game-info").value = result;
-            document.getElementById("continue-button").innerText = "Continue";
+            document.getElementById("input-section").style.display = "block";
             history.pushState({}, '', '/fetchTrimmer');
         } catch (error) {
             console.error("Error in fetchTrimmer:", error);
@@ -84,7 +107,8 @@ async function trim() {
         console.log("Start Game Response:", result); 
         document.getElementById("game-info").value = result;
         document.getElementById("trim-input").value = null;
-        document.getElementById("trim-input").placeholder = "e.g. 1,2"
+        document.getElementById("trim-input").placeholder = "e.g. 1,2";
+        document.getElementById("input-section").style.display = "none";
         history.pushState({}, '', '/trim');
     } catch (error) {
         console.error("Error in trim:", error);

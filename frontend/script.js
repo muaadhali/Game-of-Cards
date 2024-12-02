@@ -24,7 +24,18 @@ async function continuebtn() {
         case "/trim":
             checkTrim();
             break;
-    
+        case "/resolveQuest":
+            askToSponsor();
+            break;
+        case "/askToSponsor":
+            resolveSponsorResponse();
+            break;
+        case "/resolveSponsorChoice":
+            initiateStageBuilding();
+            break;
+        case "/initiateStageBuilding":
+            buildStage();
+            break;
         default:
             break;
     }
@@ -47,7 +58,7 @@ async function resolveEvent() {
     try {
         const drawOutput = await fetch(`${apiBaseUrl}/resolveEvent`);
         const result = await drawOutput.text();
-        console.log("Start Game Response:", result); 
+        console.log("resolveEvent Response:", result); 
         document.getElementById("game-info").value = result;
         document.getElementById("continue-button").innerText = "Continue";
         history.pushState({}, '', '/resolveEvent');
@@ -60,17 +71,98 @@ async function resolveQuest() {
     try {
         const drawOutput = await fetch(`${apiBaseUrl}/resolveQuest`);
         const result = await drawOutput.text();
-        console.log("Start Game Response:", result); 
+        console.log("resolveQuest Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("continue-button").innerText = "Continue";
+        history.pushState({}, '', '/resolveQuest');
+    } catch (error) {
+        console.error("Error in resolveQuest:", error);
+    }
+}
+
+async function askToSponsor() {
+    try {
+        const drawOutput = await fetch(`${apiBaseUrl}/askToSponsor`);
+        const result = await drawOutput.text();
+        console.log("askToSponsor Response:", result); 
         document.getElementById("game-info").value = result;
         document.getElementById("continue-button").innerText = "Continue";
         if (result.includes("?")) {
             document.getElementById("input-section").style.display = "block";
             document.getElementById("input-label").innerText = "Enter Yes/No Below";
+            document.getElementById("trim-input").value = null;
             document.getElementById("trim-input").placeholder = "Yes";
         }
-        history.pushState({}, '', '/resolveQuest');
+        history.pushState({}, '', '/askToSponsor');
     } catch (error) {
-        console.error("Error in resolveQuest:", error);
+        console.error("Error in askToSponsor:", error);
+    }
+}
+
+async function resolveSponsorResponse() {
+    try {
+        let response = document.getElementById("trim-input").value + " ";
+        const drawOutput = await fetch(`${apiBaseUrl}/resolveSponsorChoice`, {
+            method: "PUT",
+            headers: {
+                "Content-type": "text/plain",
+            },
+            body: response,
+        });
+        const result = await drawOutput.text();
+        console.log("resolveSponsorChoice Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("input-section").style.display = "none";
+        if (result.includes("Okay") || result.includes("Invalid")) {
+            history.pushState({}, '', '/resolveQuest');
+        } else {
+            history.pushState({}, '', '/resolveSponsorChoice');
+        }
+    } catch (error) {
+        console.error("Error in resolveSponsorChoice:", error);
+    }
+}
+
+async function initiateStageBuilding() {
+    try {
+        const drawOutput = await fetch(`${apiBaseUrl}/initiateStageBuilding`);
+        const result = await drawOutput.text();
+        console.log("initiateStageBuilding Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("continue-button").innerText = "Continue";
+        if (result.includes("Quest building complete")) {
+            
+        } else {
+            document.getElementById("input-section").style.display = "block";
+            document.getElementById("input-label").innerText = "Enter Card #'s Below";
+            document.getElementById("trim-input").value = null;
+            document.getElementById("trim-input").placeholder = "e.g. 1,2";
+            history.pushState({}, '', '/initiateStageBuilding');
+        }
+    } catch (error) {
+        console.error("Error in initiateStageBuilding:", error);
+    }
+}
+
+async function buildStage() {
+    try {
+        let indices = document.getElementById("trim-input").value;
+        const drawOutput = await fetch(`${apiBaseUrl}/buildStage`, {
+            method: "PUT",
+            headers: {
+                "Content-type": "text/plain",
+            },
+            body: indices,
+        });
+        const result = await drawOutput.text();
+        console.log("trim Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("trim-input").value = null;
+        document.getElementById("trim-input").placeholder = "e.g. 1,2";
+        document.getElementById("input-section").style.display = "none";
+        history.pushState({}, '', '/resolveSponsorChoice');
+    } catch (error) {
+        console.error("Error in trim:", error);
     }
 }
 
@@ -81,7 +173,7 @@ async function checkTrim() {
             const drawOutput = await fetch(`${apiBaseUrl}/fetchTrimmer`);
             const player = await drawOutput.json();
             const result = `Player: ${player.id}\tShields: ${player.shields}\nHand: ${player.hand.map((Card, index) => `|${index + 1}. Name: ${Card.name}, Value: ${Card.value}|`).join(", ")}\n\nTrim ${player.hand.length - 12} cards, type your choices for trimming below.`
-            console.log("Start Game Response:", result); 
+            console.log("checkTrim Response:", result); 
             document.getElementById("game-info").value = result;
             document.getElementById("input-section").style.display = "block";
             history.pushState({}, '', '/fetchTrimmer');
@@ -104,7 +196,7 @@ async function trim() {
             body: indices,
         });
         const result = await drawOutput.text();
-        console.log("Start Game Response:", result); 
+        console.log("trim Response:", result); 
         document.getElementById("game-info").value = result;
         document.getElementById("trim-input").value = null;
         document.getElementById("trim-input").placeholder = "e.g. 1,2";

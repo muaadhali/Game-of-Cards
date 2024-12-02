@@ -23,6 +23,7 @@ public class GameController {
     public ArrayList<Player> winners = new ArrayList<>();
     public ArrayList<ArrayList<Card>> quest = new ArrayList<>();
     public HashMap<Integer, ArrayList<Card>> attack = new HashMap<>();
+    public ArrayList<Player> eligibleSponsors = new ArrayList<>();
 
     public GameController() {
         playerNum = 4;
@@ -74,7 +75,19 @@ public class GameController {
     @GetMapping("/resolveQuest")
     public String resolveQuest() {
         String result = "";
-        ArrayList<Player> eligibleSponsors = checkSponsorEligibility();
+        eligibleSponsors = checkSponsorEligibility();
+
+        if (eligibleSponsors.isEmpty()) {
+            result = "\nNo one is eligible to sponsor the quest.\n";
+        } else {
+            result = "\nThe quest can be sponsored.\n";
+        }
+        return result;
+    }
+
+    @GetMapping("/askToSponsor")
+    public String askToSponsor() {
+        String result = "";
 
         if (eligibleSponsors.isEmpty()) {
             result = "\nNo one is eligible to sponsor the quest.\n";
@@ -84,9 +97,90 @@ public class GameController {
         return result;
     }
 
-    @GetMapping("resolveSponsorChoice")
-    public void resolveSponsorChoice() {
+    @PutMapping("/resolveSponsorChoice")
+    public String resolveSponsorChoice(@RequestBody String input) {
+        String result = "";
+        String inp = input.replaceAll("\\s+","").toLowerCase();
 
+        if (inp.equals("y") || inp.equals("yes")) {
+            result += "Prepare to setup your stages...";
+            currSponsor = eligibleSponsors.get(0);
+        } else if (inp.equals("n") || inp.equals("no")) {
+            result += "Okay.";
+            eligibleSponsors.remove(0);
+        } else {
+            result += "Invalid Input. Try Again.\n";
+        }
+
+        return result;
+    }
+
+    @GetMapping("/initiateStageBuilding")
+    public String initiateStageBuilding() {
+        String result = currSponsor.toString() + "\n\nQuest: " + currCard + "\nNo. of Stages built: " + quest.size() + "/" + ((QuestCard) currCard).stages + "\n";
+
+        String questSoFar = "";
+        int count = 1, score = 0;
+        for (ArrayList<Card> stage : quest) {
+            questSoFar += "Stage " + count + ": ";
+            for (int i = 0; i < stage.size(); i++) {
+                score += ((AdventureCard) stage.get(i)).value;
+                questSoFar += (i+1) + ". " + ((AdventureCard) stage.get(i)).toString();
+            }
+            questSoFar += "\n\tValue = " + score + "\n";
+            score = 0;
+            count++;
+        }
+
+        if (quest.size() == ((QuestCard) currCard).stages) {
+            questSoFar += "\nQuest building complete.";
+        } else {
+            questSoFar += "\nChoose cards for Stage " + count + " below (must contain at least 1 foe and exceed the total value of the previous stage).";
+        }
+
+        return result + questSoFar;
+    }
+
+    @PutMapping("buildStage")
+    public String buildStage(@RequestBody String input) {
+        boolean foeAdded = false;
+        int prevScore = 0, currScore = 0;
+        String result;
+        String[] inpArr = input.replaceAll("\\s","").split(",");
+        int[] intInp = new int[inpArr.length];
+        ArrayList<Card> stage = new ArrayList<>();
+
+        for (int i = 0; i < inpArr.length; i++) {
+            intInp[i] = Integer.parseInt(inpArr[i]) - 1;
+        }
+
+        Arrays.sort(intInp);
+
+        if (!quest.isEmpty()) {
+            for (Card c : quest.get(quest.size() - 1)) {
+                prevScore += ((AdventureCard) c).value;
+            }
+        }
+
+        for (int i = intInp.length - 1; i >= 0; i--) {
+            foeAdded = currSponsor.hand.get(intInp[i]).getName().equalsIgnoreCase("Foe") || foeAdded;
+            currScore += ((AdventureCard) currSponsor.hand.get(intInp[i])).value;
+            stage.addFirst(currSponsor.hand.remove(intInp[i]));
+        }
+
+        if (!foeAdded || currScore < prevScore) {
+            result = "Invalid Stage. Try Again.";
+            currSponsor.hand.addAll(stage);
+            sortHand(currSponsor.getId()-1);
+        } else {
+            result = "Stage built successfully.\nCards: ";
+            for (int i = 0; i < stage.size(); i++) {
+                result += (i+1) + ". " + stage.get(i).toString();
+            }
+            quest.add(stage);
+        }
+
+        return result;
     }
 
     public ArrayList<Player> checkSponsorEligibility() {

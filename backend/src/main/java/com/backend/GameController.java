@@ -11,6 +11,7 @@ public class GameController {
     private int playerNum;
     private int round;
     public int trimmer;
+    public int currAttacker = 0;
     public Player currPlayer;
     public Card currCard;
     public Player currSponsor;
@@ -33,27 +34,62 @@ public class GameController {
         initializeHands();
     }
 
+    @DeleteMapping("resetGame")
+    public String resetGame() {
+        players.clear();
+        adventureDeck.clear();
+        adventureDiscard.clear();
+        eventDeck.clear();
+        eventDiscard.clear();
+        quest.clear();
+        attack.clear();
+        eligibleSponsors.clear();
+
+        round = 0;
+        currAttacker = 0;
+        currCard = null;
+        currSponsor = null;
+
+        initializeDecks();
+        System.out.println("adv deck size =" + adventureDeck.size() + "\nadv discard size = " + adventureDiscard.size() + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        initializeHands();
+
+        return "Game Reset.";
+    }
+
     @GetMapping("/start")
     public String start() {
+        String result = "";
+        if (currPlayer != null) {
+            if (checkWinner()) {
+                result += "WINNER" + ((winners.size() > 1) ? "S\n" : "\n");
+                for (Player winner : winners) {
+                    result += winner;
+                }
+
+                return result;
+            }
+        }
+
         currPlayer = players.get(round % playerNum);
         round++;
         drawEvent();
 
-        return "CURRENT PLAYER\n\n" + currPlayer + "\n\nPlayer " + currPlayer.getId() + " has drawn a" + ((currCard instanceof QuestCard) ? " Quest: " : "n Event: ") + currCard + ".";
+        return "CURRENT PLAYER\n\n" + currPlayer + "\n\n\n\n\nPlayer " + currPlayer.getId() + " has drawn a" + ((currCard instanceof QuestCard) ? " Quest: " : "n Event: ") + currCard + ".";
     }
 
     @GetMapping("/resolveEvent")
     public String resolveEvent() {
-        String result = "";
+        String result = "EVENT: " + currCard.getName() + "\n\n";
         switch (currCard.getName()) {
             case "Plague":
                 currPlayer.shields = (currPlayer.shields > 2) ? currPlayer.shields - 2 : 0;
-                result = "Player " + currPlayer.getId() + " lost 2 shields.";
+                result += "Player " + currPlayer.getId() + " lost 2 shields.";
                 break;
             case "Queen's Favor":
                 currPlayer.draw += 2;
                 drawAdventure(currPlayer.getId()-1, 2);
-                result = "Player " + currPlayer.getId() + " has drawn 2 cards" + ((currPlayer.getHandSize() > 12) ? " and needs to trim." : " and does not need to trim.");
+                result += "Player " + currPlayer.getId() + " has drawn 2 cards" + ((currPlayer.getHandSize() > 12) ? " and needs to trim." : " and does not need to trim.");
                 trimmer = (currPlayer.getHandSize() > 12)? currPlayer.getId()-1 : -1;
                 break;
             case "Prosperity":
@@ -65,7 +101,7 @@ public class GameController {
                         trimmer = i;
                     }
                 }
-                result = "All players have drawn 2" + ((trimmer > -1) ? (" and some need to trim.\nPlayer " + (trimmer+1) + " will begin trimming...") : " and no trimming is needed.");
+                result += "All players have drawn 2" + ((trimmer > -1) ? (" and some need to trim.\nPlayer " + (trimmer+1) + " will begin trimming...") : " and no trimming is needed.");
                 break;
         }
 
@@ -74,25 +110,25 @@ public class GameController {
 
     @GetMapping("/resolveQuest")
     public String resolveQuest() {
-        String result = "";
+        String result = "QUEST: " + currCard;
         eligibleSponsors = checkSponsorEligibility();
 
         if (eligibleSponsors.isEmpty()) {
-            result = "\nNo one is eligible to sponsor the quest.\n";
+            result += "\nNo one is eligible to sponsor the quest.\n";
         } else {
-            result = "\nThe quest can be sponsored.\n";
+            result += "\nThe quest can be sponsored.\n";
         }
         return result;
     }
 
     @GetMapping("/askToSponsor")
     public String askToSponsor() {
-        String result = "";
+        String result = "QUEST: " + currCard;
 
         if (eligibleSponsors.isEmpty()) {
             result = "\nNo one is eligible to sponsor the quest.\n";
         } else {
-            result += eligibleSponsors.get(0).toString() + "\n\nWould you like to sponser the Quest: " + currCard + "?";
+            result += eligibleSponsors.get(0).toString() + "\n\nWould you like to sponser the quest?";
         }
         return result;
     }
@@ -105,6 +141,7 @@ public class GameController {
         if (inp.equals("y") || inp.equals("yes")) {
             result += "Prepare to setup your stages...";
             currSponsor = eligibleSponsors.get(0);
+            eligibleSponsors.clear();
         } else if (inp.equals("n") || inp.equals("no")) {
             result += "Okay.";
             eligibleSponsors.remove(0);
@@ -117,7 +154,7 @@ public class GameController {
 
     @GetMapping("/initiateStageBuilding")
     public String initiateStageBuilding() {
-        String result = currSponsor.toString() + "\n\nQuest: " + currCard + "\nNo. of Stages built: " + quest.size() + "/" + ((QuestCard) currCard).stages + "\n";
+        String result = currSponsor.toString() + "\n\nQUEST: " + currCard + "\tNo. of Stages built: " + quest.size() + "/" + ((QuestCard) currCard).stages + "\n";
 
         String questSoFar = "";
         int count = 1, score = 0;
@@ -141,7 +178,7 @@ public class GameController {
         return result + questSoFar;
     }
 
-    @PutMapping("buildStage")
+    @PutMapping("/buildStage")
     public String buildStage(@RequestBody String input) {
         boolean foeAdded = false;
         int prevScore = 0, currScore = 0;
@@ -183,22 +220,81 @@ public class GameController {
         return result;
     }
 
-    public ArrayList<Player> checkSponsorEligibility() {
-        ArrayList<Player> eligibleSponsors = new ArrayList<>();
-        QuestCard quest = (QuestCard) currCard;
-        for (Player player : players) {
-            int count = 0;
-            for (Card j : player.hand) {
-                if (j.getName().equals("Foe")) {
-                    count++;
-                }
+    @GetMapping("/askAttacker")
+    public String askAttacker() {
+        String result = "QUEST: " + currCard + "\tCURRENT STAGE: " + ((((QuestCard)currCard).stages - quest.size()) + 1) + "/" + ((QuestCard)currCard).stages + "\n\n";
+        if (players.get(currAttacker) == currSponsor) {
+            currAttacker++;
+        }
+        if (currAttacker != players.size()) {
+            result += players.get(currAttacker) + "\n\nWould you like to attack this stage?";
+        } else {
+            result += "All players have responded.";
+        }
+
+        return result;
+    }
+
+    @PutMapping("/resolveAttackerResponse")
+    public String resolveAttackerResponse(@RequestBody String input) {
+        String result = "";
+        String inp = input.replaceAll("\\s+","").toLowerCase();
+
+        if (inp.equals("y") || inp.equals("yes")) {
+            result += "Prepare to setup your attack...";
+        } else if (inp.equals("n") || inp.equals("no")) {
+            result += "Okay.";
+            currAttacker++;
+        } else {
+            result += "Invalid Input. Try Again.\n";
+        }
+
+        return result;
+    }
+
+    @GetMapping("/askForAttackChoices")
+    public String askForAttackChoices() {
+        String result = "QUEST: " + currCard.getName() + "\tCURRENT STAGE: " + ((((QuestCard)currCard).stages - quest.size()) + 1) + "/" + ((QuestCard)currCard).stages + "\n\n";
+        result += "CURRENT PLAYER\n\n" + currPlayer + "\n\nChoose the cards for your attack below (e.g. 1,2,3).";
+
+        return result;
+    }
+
+    @PutMapping("/buildAttack")
+    public String buildAttack(@RequestBody String input) {
+        ArrayList<String> cardsAdded = new ArrayList<>();
+        String result = "";
+        String[] inpArr = input.replaceAll("\\s","").split(",");
+        boolean valid = true;
+        int[] intInp = new int[inpArr.length];
+        ArrayList<Card> stage = new ArrayList<>();
+
+        for (int i = 0; i < inpArr.length; i++) {
+            intInp[i] = Integer.parseInt(inpArr[i]) - 1;
+        }
+
+        Arrays.sort(intInp);
+
+        for (int i = intInp.length; i >= 0; i--) {
+            valid = !(players.get(currAttacker).hand.get(intInp[i]).getName().equalsIgnoreCase("Foe") || cardsAdded.contains(players.get(currAttacker).hand.get(intInp[i]).getName())) && valid;
+            attack.get(currAttacker+1).addFirst(players.get(currAttacker).hand.remove(intInp[i]));
+        }
+
+        if (!valid) {
+            for (int i = 0; i < attack.get(currAttacker+1).size(); i++) {
+                players.get(currAttacker).hand.add(attack.get(currAttacker+1).remove(i));
+                sortHand(currAttacker);
             }
-            if (count >= quest.stages) {
-                eligibleSponsors.add(player);
+            result += "Invalid Attack. Try Again.";
+        } else {
+            result += "QUEST: " + currCard.getName() + "\tCURRENT STAGE: " + ((((QuestCard)currCard).stages - quest.size()) + 1) + "/" + ((QuestCard)currCard).stages + "\n\n";
+            result += "CURRENT PLAYER\n\n" + currPlayer + "\n\nYOUR ATTACK: ";
+            for (int i = 0; i < attack.get(currAttacker+1).size(); i++) {
+                result += (i+1) + ". " + attack.get(currAttacker+1).get(i);
             }
         }
 
-        return eligibleSponsors;
+        return  result;
     }
 
     @GetMapping("/fetchTrimmer")
@@ -208,7 +304,7 @@ public class GameController {
 
     @PutMapping("/trim")
     public String trim(@RequestBody String input) {
-        String result;
+        String result = ((currCard instanceof EventCard) ? "EVENT: " + currCard.getName() : "QUEST: " + currCard) + "\n\n";
         String[] inpArr = input.replaceAll("\\s","").split(",");
         int[] intInp = new int[inpArr.length];
 
@@ -222,7 +318,7 @@ public class GameController {
             adventureDiscard.add(players.get(trimmer).hand.remove(intInp[i]));
         }
 
-        result = "Player " + (trimmer+1) + " finished trimming.";
+        result += "Player " + (trimmer+1) + " finished trimming.";
 
         System.out.println(players.get(trimmer) + "\n Finished trimming.");
 
@@ -249,6 +345,8 @@ public class GameController {
         return result;
     }
 
+
+
     public int getAdventureDeckSize(){
         return adventureDeck.size();
     }
@@ -260,6 +358,32 @@ public class GameController {
     public int getPlayer3HandSize() { return players.get(2).getHandSize(); }
     public int getPlayer4HandSize() { return players.get(3).getHandSize(); }
 
+    private boolean checkWinner() {
+        for (Player player : players) {
+            if (player.shields >= 7) {
+                winners.add(player);
+            }
+        }
+        return !winners.isEmpty();
+    }
+
+    public ArrayList<Player> checkSponsorEligibility() {
+        ArrayList<Player> eligibleSponsors = new ArrayList<>();
+        QuestCard quest = (QuestCard) currCard;
+        for (Player player : players) {
+            int count = 0;
+            for (Card j : player.hand) {
+                if (j.getName().equals("Foe")) {
+                    count++;
+                }
+            }
+            if (count >= quest.stages) {
+                eligibleSponsors.add(player);
+            }
+        }
+
+        return eligibleSponsors;
+    }
 
     public void initializeHands() {
         for (int i = 0; i < playerNum; i++) {
@@ -283,18 +407,23 @@ public class GameController {
         }
 
         currCard = eventDeck.getLast();
-        eventDiscard.add(eventDeck.removeLast());
+        eventDiscard.add(eventDeck.remove(eventDeck.size()-1));
     }
 
     public void drawAdventure(int index, int num) {
+        System.out.println("adv deck size =" + adventureDeck.size() + "\nadv discard size = " + adventureDiscard.size() + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println(("last adv card = " + adventureDeck.get(adventureDeck.size()-1)));
+        System.out.println("index = " + index + " num = " + num);
         if (players.get(index).draw <= 0) {
             return;
         }
         for (int j = 0; j < num; j++) {
-            if (getAdventureDiscardSize() == 0) {
+            if (getAdventureDeckSize() == 0) {
                 refillDeck(adventureDeck, adventureDiscard);
             }
-            players.get(index).hand.add(adventureDeck.removeLast());
+            System.out.println("adv deck size =" + adventureDeck.size() + "\nadv discard size = " + adventureDiscard.size() + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println(("last adv card = " + adventureDeck.get(adventureDeck.size()-1)));
+            players.get(index).hand.add(adventureDeck.remove(adventureDeck.size()-1));
             players.get(index).draw--;
         }
 

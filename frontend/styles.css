@@ -65,6 +65,23 @@ label {
     transition: background-color 0.3s;
 }
 
+#reset-button {
+    background-color: #f44336; /* Red background for reset button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px; /* Add spacing between the buttons */
+}
+
+/* Button hover effect */
+#reset-button:hover {
+    background-color: #e53935; /* Slightly darker red on hover */
+}
+
 /* Button hover effect */
 #continue-button:hover {
     background-color: #45a049;

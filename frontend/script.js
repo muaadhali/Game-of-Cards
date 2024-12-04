@@ -48,6 +48,18 @@ async function continuebtn() {
         case "/setupAttack":
             askForAttackChoices();
             break;
+        case "/askForAttackChoices":
+            buildAttack();
+            break;
+        case "/stageComplete":
+            resolveAttacks();
+            break;
+        case "/questAttacksComplete":
+            questReward();
+            break;
+        case "/questReward":
+            sponsorDraw();
+            break;
         default:
             break;
     }
@@ -133,8 +145,10 @@ async function askToSponsor() {
             document.getElementById("input-label").innerText = "Enter Yes/No Below";
             document.getElementById("trim-input").value = null;
             document.getElementById("trim-input").placeholder = "Yes";
+            history.pushState({}, '', '/askToSponsor');
+        } else {
+            history.pushState({}, '', '/');
         }
-        history.pushState({}, '', '/askToSponsor');
     } catch (error) {
         console.error("Error in askToSponsor:", error);
     }
@@ -216,6 +230,8 @@ async function askAttacker() {
         document.getElementById("continue-button").innerText = "Continue";
         if (result.includes("All players have responded")) {
             history.pushState({}, '', '/stageComplete');
+        } else if (result.includes("No attackers left.")) {
+            history.pushState({}, '', '/questAttacksComplete');
         } else {
             document.getElementById("input-section").style.display = "block";
             document.getElementById("input-label").innerText = "Enter Response Below (Yes/No)";
@@ -245,7 +261,7 @@ async function resolveAttackerResponse() {
         if (result.includes("Okay") || result.includes("Invalid")) {
             history.pushState({}, '', '/questBuilt');
         } else {
-            history.pushState({}, '', '/setupAttack');
+            history.pushState({}, '', '/trim');
         }
     } catch (error) {
         console.error("Error in resolveAttackerResponse:", error);
@@ -269,9 +285,75 @@ async function askForAttackChoices() {
     }
 }
 
+async function buildAttack() {
+    try {
+        let response = document.getElementById("trim-input").value + " ";
+        const drawOutput = await fetch(`${apiBaseUrl}/buildAttack`, {
+            method: "PUT",
+            headers: {
+                "Content-type": "text/plain",
+            },
+            body: response,
+        });
+        const result = await drawOutput.text();
+        console.log("buildAttack Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("input-section").style.display = "none";
+        if (result.includes("Invalid")) {
+            history.pushState({}, '', '/setupAttack');
+        } else {
+            history.pushState({}, '', '/questBuilt');
+        }
+    } catch (error) {
+        console.error("Error in buildAttack:", error);
+    }
+}
+
+async function resolveAttacks() {
+    try {
+        const drawOutput = await fetch(`${apiBaseUrl}/resolveAttacks`);
+        const result = await drawOutput.text();
+        console.log("resolveAttacks Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("continue-button").innerText = "Continue";
+        if (result.includes("QUEST COMPLETE!!")) {
+            history.pushState({}, '', '/questAttacksComplete');
+        }
+        history.pushState({}, '', '/resolveAttacks');
+    } catch (error) {
+        console.error("Error in askForAttackChoices:", error);
+    }
+}
+
+async function questReward() {
+    try {
+        const drawOutput = await fetch(`${apiBaseUrl}/questReward`);
+        const result = await drawOutput.text();
+        console.log("questReward Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("continue-button").innerText = "Continue";
+        history.pushState({}, '', '/questReward');
+    } catch (error) {
+        console.error("Error in questReward:", error);
+    }
+}
+
+async function sponsorDraw() {
+    try {
+        const drawOutput = await fetch(`${apiBaseUrl}/sponsorDraw`);
+        const result = await drawOutput.text();
+        console.log("sponsorDraw Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("continue-button").innerText = "Continue";
+        history.pushState({}, '', '/trim');
+    } catch (error) {
+        console.error("Error in sponsorDraw:", error);
+    }
+}
+
 async function checkTrim() {
     let gameInfo = document.getElementById("game-info").value;
-    if (gameInfo.includes("and some need to trim.") || gameInfo.includes("and needs to trim.") || gameInfo.includes("needs to trim next.")) {
+    if (gameInfo.includes("and some need to trim.") || gameInfo.includes("and needs to trim.") || gameInfo.includes("needs to trim next.") || gameInfo.includes("Drawing")) {
         try {
             const drawOutput = await fetch(`${apiBaseUrl}/fetchTrimmer`);
             const player = await drawOutput.json();
@@ -279,13 +361,16 @@ async function checkTrim() {
             console.log("checkTrim Response:", result); 
             document.getElementById("game-info").value = result;
             document.getElementById("input-section").style.display = "block";
+            document.getElementById("trim-input").value = null;
             history.pushState({}, '', '/fetchTrimmer');
         } catch (error) {
             console.error("Error in fetchTrimmer:", error);
         }
     } else {
-        if (gameInfo.includes("EVENT")) {
+        if (gameInfo.includes("EVENT") || gameInfo.includes("Sponsor")) {
             start();
+        } else {
+            askForAttackChoices();
         }
     }
 }

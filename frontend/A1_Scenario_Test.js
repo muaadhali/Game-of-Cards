@@ -20,65 +20,65 @@ async function runA1Test() {
         await driver.sleep(1000);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         let playerInput = await driver.findElement(By.id("trim-input"));
         await playerInput.sendKeys("No"); //player 1 refuses to sponsor
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 2 accepts sponsoring the quest
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("1,8"); //player 2 sets up the first stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("2,6"); //player 2 sets up the second stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("2,4,6"); //player 2 sets up the third stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("2,4"); //player 2 sets up the fourth stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         let gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         let substrings = ["QUEST: |Stages: 4, Shields: 4|	No. of Stages built: 4/4",
@@ -93,100 +93,100 @@ async function runA1Test() {
         await console.assert(substrings.every(substring => gameStatus.includes(substring)), "The quest was built incorrectly");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 1 accepts attacking the first stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("1"); //player 1 trims the first card (F5)
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("5,6"); //player 1 sets up attack for first stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Dagger, Value: 5| 2. |Name: Sword, Value: 10|"), "Player 1's attack is incorrect for stage 1");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 3 accepts attacking the first stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("1"); //player 3 trims the first card (F5)
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("5,4"); //player 3 sets up attack for the first stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Dagger, Value: 5| 2. |Name: Sword, Value: 10|"), "Player 3's attack is incorrect for stage 1");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 4 accepts attacking the first stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("1"); //player 4 trims the first card (F5)
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("5,8"); //player 4 sets up attack for the first stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Dagger, Value: 5| 2. |Name: Horse, Value: 10|"), "Player 4's attack is incorrect for stage 1");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         substrings = ["Player 1 succeeds their attack.",
@@ -195,91 +195,91 @@ async function runA1Test() {
         await console.assert(substrings.every(substring => gameStatus.includes(substring)), "Players' attack resolution not correct for stage 1");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 1 accepts attacking the second stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("6,7"); //player 1 builds attack for second stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Sword, Value: 10| 2. |Name: Horse, Value: 10|"), "Player 1's attack is incorrect for stage 2");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 3 accepts attacking the second stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("9,6"); //player 3 builds attack for second stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Sword, Value: 10| 2. |Name: Battle-Axe, Value: 15|"), "Player 3's attack is incorrect for stage 2");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 4 accepts attacking the second stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("6,7"); //player 4 builds attack for second stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Horse, Value: 10| 2. |Name: Battle-Axe, Value: 15|"), "Player 4's attack is incorrect for stage 2");
         
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         substrings = ["Player 1 fails their attack.",
@@ -293,64 +293,64 @@ async function runA1Test() {
                                             "Player 1 has 0 shields and has the correct final hand (F5 F10 F15 F15 F30 Horse Axe Axe Lance)");
         
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 3 accepts attacking the third stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("9,6,5"); //player 3 builds attack for third stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);  
+        await driver.sleep(500);  
         
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Sword, Value: 10| 2. |Name: Horse, Value: 10| 3. |Name: Lance, Value: 20|"), "Player 3's attack is incorrect for stage 3");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 4 accepts attacking the third stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("7,5,8"); //player 4 builds attack for third stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);  
+        await driver.sleep(500);  
         
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Sword, Value: 10| 2. |Name: Battle-Axe, Value: 15| 3. |Name: Lance, Value: 20|"), "Player 4's attack is incorrect for stage 3");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         substrings = ["Player 3 succeeds their attack.",
@@ -358,64 +358,64 @@ async function runA1Test() {
         await console.assert(substrings.every(substring => gameStatus.includes(substring)), "Players' attack resolution not correct for stage 3");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 3 accepts attacking the fourth stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("7,6,8"); //player 3 builds attack for fourth stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);  
+        await driver.sleep(500);  
         
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Horse, Value: 10| 2. |Name: Battle-Axe, Value: 15| 3. |Name: Lance, Value: 20|"), "Player 3's attack is incorrect for stage 4");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("Yes"); //player 4 accepts attacking the fourth stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playerInput.sendKeys("4,5,6,8"); //player 4 builds attack for fourth stage
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);  
+        await driver.sleep(500);  
         
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("YOUR ATTACK: 1. |Name: Dagger, Value: 5| 2. |Name: Sword, Value: 10| 3. |Name: Lance, Value: 20| 4. |Name: Excalibur, Value: 30|"), "Player 4's attack is incorrect for stage 4");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         substrings = ["Player 3 fails their attack.",
@@ -429,7 +429,7 @@ async function runA1Test() {
                             "Player 3 has 0 shields and the correct hand (F5 F5 F15 F30 Sword)");
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         substrings = ["Player 4 completed the quest and is rewarded 4 shields",
@@ -439,16 +439,16 @@ async function runA1Test() {
                             "Player 4 has 4 shields and the correct hand (F15 F15 F40 Lance)");
 
         await playButton.click();
-        await driver.sleep(1000);  
+        await driver.sleep(500);  
         
         await playButton.click();
-        await driver.sleep(1000);  
+        await driver.sleep(500);  
 
         await playerInput.sendKeys("4,5,6,8"); //player 2 trims 4 cards
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
         await playButton.click();
-        await driver.sleep(1000);
+        await driver.sleep(500);
            
         gameStatus = await driver.findElement(By.id('game-info')).getAttribute("value");
         await console.assert(gameStatus.includes("PLAYER: 2	SHIELDS: 0	HAND SIZE: 12"), "Player 2's hand size is 12 after trimming");

@@ -815,7 +815,7 @@ public class MainTest {
         dummy.add(new AdventureCard("Battle-Axe", 15));
         dummy.add(new AdventureCard("Lance", 20));
 
-        System.out.println("com.game.Player 1: " + game.players.getFirst());
+        System.out.println("Player 1: " + game.players.getFirst());
         for (int i = 0; i < dummy.size(); i++) {
             assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.getFirst().hand.get(i).getName()));
             assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.getFirst().hand.get(i)).value);
@@ -856,7 +856,7 @@ public class MainTest {
         dummy.add(new AdventureCard("Foe", 30));
         dummy.add(new AdventureCard("Sword", 10));
 
-        System.out.println("com.game.Player 3: " + game.players.get(2));
+        System.out.println("Player 3: " + game.players.get(2));
         for (int i = 0; i < dummy.size(); i++) {
             assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.get(2).hand.get(i).getName()));
             assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.get(2).hand.get(i)).value);
@@ -870,7 +870,7 @@ public class MainTest {
         dummy.add(new AdventureCard("Foe", 40));
         dummy.add(new AdventureCard("Lance", 20));
 
-        System.out.println("com.game.Player 4: " + game.players.getLast());
+        System.out.println("Player 4: " + game.players.getLast());
         for (int i = 0; i < dummy.size(); i++) {
             assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.getLast().hand.get(i).getName()));
             assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.getLast().hand.get(i)).value);

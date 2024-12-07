@@ -122,7 +122,7 @@ public class GameSteps {
         dummy.add(new AdventureCard("Foe", 30));
         dummy.add(new AdventureCard("Sword", 10));
 
-        System.out.println("com.game.Player 3: " + game.players.get(2));
+        System.out.println("Player 3: " + game.players.get(2));
         for (int i = 0; i < dummy.size(); i++) {
             assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.get(2).hand.get(i).getName()));
             assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.get(2).hand.get(i)).value);
@@ -137,7 +137,7 @@ public class GameSteps {
         dummy.add(new AdventureCard("Foe", 40));
         dummy.add(new AdventureCard("Lance", 20));
 
-        System.out.println("com.game.Player 4: " + game.players.getLast());
+        System.out.println("Player 4: " + game.players.getLast());
         for (int i = 0; i < dummy.size(); i++) {
             assertTrue(dummy.get(i).getName().equalsIgnoreCase(game.players.getLast().hand.get(i).getName()));
             assertEquals(((AdventureCard) dummy.get(i)).value, ((AdventureCard) game.players.getLast().hand.get(i)).value);
@@ -227,7 +227,7 @@ public class GameSteps {
         game.sortHand(3);
 
         for (Player p : game.players) {
-            System.out.println("com.game.Player" + p.getId() + ": " + p.printableHand());
+            System.out.println("Player" + p.getId() + ": " + p.printableHand());
         }
     }
 
@@ -405,7 +405,7 @@ public class GameSteps {
         System.out.println(outStream.toString());
 
         for (int i = 0; i < playersArr.length; i++) {
-            String thisPlayer = "com.game.Player: " + playersArr[i].replaceAll("\\s", "");
+            String thisPlayer = "Player: " + playersArr[i].replaceAll("\\s", "");
             assertTrue(outStream.toString().contains(thisPlayer));
         }
 
@@ -453,7 +453,7 @@ public class GameSteps {
         game.sortHand(3);
 
         for (Player p : game.players) {
-            System.out.println("com.game.Player" + p.getId() + ": " + p.printableHand());
+            System.out.println("Player" + p.getId() + ": " + p.printableHand());
         }
     }
 

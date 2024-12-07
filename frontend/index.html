@@ -18,9 +18,18 @@
             <input type="text" id="trim-input" placeholder="e.g. 1,2">
         </div>
 
-        <div>
-            <button id="continue-button" onclick="continuebtn()">Start Game</button>
-            <button id="reset-button" onclick="resetGame()">Reset Game</button>
+        <div class="button-container">
+            <div class="setup-buttons">
+                <button id="rigtest-button" onclick="rigCards(event)">Setup Test 1</button>
+                <button id="rigtest-button2" class="setup-button" onclick="rigCards(event)">Setup Test 2</button>
+                <button id="rigtest-button3" class="setup-button" onclick="rigCards(event)">Setup Test 3</button>
+                <button id="rigtest-button4" class="setup-button" onclick="rigCards(event)">Setup Test 4</button>
+            </div>
+        
+            <div class="main-buttons">
+                <button id="continue-button" onclick="continuebtn()">Start Game</button>
+                <button id="reset-button" onclick="resetGame()">Reset Game</button>
+            </div>
         </div>
     </div>
 

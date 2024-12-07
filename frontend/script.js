@@ -1,5 +1,46 @@
 const apiBaseUrl = "http://localhost:8081";
 
+
+async function rigCards(event) {
+    let path = "";
+
+    switch (event.target.id) {
+        case "rigtest-button":
+            path = 'rigA1Scenario';
+            break;
+        case "rigtest-button2":
+            path = 'rigA3Scenario1';
+            break;
+        case "rigtest-button3":
+            path = 'rigA3Scenario2';
+            break;
+        case "rigtest-button4":
+            path = 'rigA3Scenario3';
+            break;
+        default:
+            break;
+    }
+
+    try {
+        const drawOutput = await fetch(`${apiBaseUrl}/${path}`, {
+            method: "PUT",
+            headers: {
+                "Content-type": "text/plain",
+            },
+            body: "",
+        });
+        const result = await drawOutput.text();
+        console.log(path + " Response:", result); 
+        document.getElementById("game-info").value = result;
+        document.getElementById("trim-input").value = null;
+        document.getElementById("trim-input").placeholder = "e.g. 1,2";
+        document.getElementById("input-section").style.display = "none";
+        history.pushState({}, '', '/');
+    } catch (error) {
+        console.error(`Error in ${path}: `, error);
+    }
+}
+
 async function continuebtn() {
     var url = window.location.pathname;
 
@@ -54,6 +95,9 @@ async function continuebtn() {
         case "/stageComplete":
             resolveAttacks();
             break;
+        case "/resolveAttacks":
+            askAttacker();
+            break;
         case "/questAttacksComplete":
             questReward();
             break;
@@ -76,7 +120,8 @@ async function resetGame() {
         const result = await drawOutput.text();
         console.log("resetGame Response:", result); 
         document.getElementById("game-info").value = result;
-        document.getElementById("continue-button").innerText = "Start";
+        document.getElementById("continue-button").innerText = "Start Game";
+        document.getElementById("continue-button").style.display = "inline-block";
         document.getElementById("input-section").style.display = "none";
         history.pushState({}, '', '/');
         
@@ -92,7 +137,7 @@ async function start() {
         console.log("Start Game Response:", result); 
         document.getElementById("game-info").value = result;
         if (result.includes("WINNERS")) {
-            document.getElementById("continue-button").innerText = "New Game";
+            document.getElementById("continue-button").style.display = "none";
             history.pushState({}, '', '/newGame');
         } else {
             document.getElementById("continue-button").innerText = "Continue";
@@ -311,15 +356,23 @@ async function buildAttack() {
 
 async function resolveAttacks() {
     try {
-        const drawOutput = await fetch(`${apiBaseUrl}/resolveAttacks`);
+        const drawOutput = await fetch(`${apiBaseUrl}/resolveAttacks`, {
+            method: "PUT",
+            headers: {
+                "Content-type": "text/plain",
+            },
+            body: "",
+        });
         const result = await drawOutput.text();
         console.log("resolveAttacks Response:", result); 
         document.getElementById("game-info").value = result;
         document.getElementById("continue-button").innerText = "Continue";
         if (result.includes("QUEST COMPLETE!!")) {
             history.pushState({}, '', '/questAttacksComplete');
+        } else {
+            history.pushState({}, '', '/resolveAttacks');
         }
-        history.pushState({}, '', '/resolveAttacks');
+        
     } catch (error) {
         console.error("Error in askForAttackChoices:", error);
     }
@@ -356,12 +409,16 @@ async function checkTrim() {
     if (gameInfo.includes("and some need to trim.") || gameInfo.includes("and needs to trim.") || gameInfo.includes("needs to trim next.") || gameInfo.includes("Drawing")) {
         try {
             const drawOutput = await fetch(`${apiBaseUrl}/fetchTrimmer`);
-            const player = await drawOutput.json();
-            const result = `Player: ${player.id}\tShields: ${player.shields}\nHand: ${player.hand.map((Card, index) => `|${index + 1}. Name: ${Card.name}, Value: ${Card.value}|`).join(", ")}\n\nTrim ${player.hand.length - 12} cards, type your choices for trimming below.`
+            const result = await drawOutput.text();
             console.log("checkTrim Response:", result); 
             document.getElementById("game-info").value = result;
-            document.getElementById("input-section").style.display = "block";
-            document.getElementById("trim-input").value = null;
+            if (result.includes("No trimming necessary")) {
+                document.getElementById("input-section").style.display = "none";
+                document.getElementById("trim-input").value = null;
+            } else {
+                document.getElementById("input-section").style.display = "block";
+                document.getElementById("trim-input").value = null;
+            }
             history.pushState({}, '', '/fetchTrimmer');
         } catch (error) {
             console.error("Error in fetchTrimmer:", error);
@@ -378,6 +435,7 @@ async function checkTrim() {
 async function trim() {
     try {
         let indices = document.getElementById("trim-input").value;
+        indices += " ";
         const drawOutput = await fetch(`${apiBaseUrl}/trim`, {
             method: "PUT",
             headers: {

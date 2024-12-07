@@ -31,6 +31,6 @@ public class Player {
 
     @Override
     public String toString() {
-        return "PLAYER: " + id + "\tSHIELDS: " + shields + "\nHAND: " + printableHand();
+        return "PLAYER: " + id + "\tSHIELDS: " + shields + "\tHAND SIZE: " + getHandSize() + "\nHAND: " + printableHand();
     }
 }
